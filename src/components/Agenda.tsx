@@ -17,11 +17,28 @@ export function Agenda() {
   const [formData, setFormData] = useState({ name: '', whatsapp: '', date: '', service: '' });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{id: string, name: string} | null>(null);
 
   useEffect(() => {
     fetchAppointments();
+
+    // Configuração Realtime
+    const channel = supabase
+      .channel('agenda_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'agenda' },
+        () => {
+          fetchAppointments();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const formatDate = (dateString: string) => {
@@ -40,15 +57,14 @@ export function Agenda() {
 
   const fetchAppointments = async () => {
     try {
-      setLoading(true);
+      setIsSyncing(true);
       const { data, error } = await supabase
         .from('agenda')
-        .select('*')
+        .select('id, cliente_nome, cliente_whatsapp, data_hora, servico, status')
         .order('data_hora', { ascending: true });
 
       if (error) throw error;
       
-      // Map database columns back to UI state if needed, or update Appointment interface
       const mappedData = (data || []).map((app: any) => ({
         id: app.id,
         name: app.cliente_nome,
@@ -61,8 +77,10 @@ export function Agenda() {
       setAppointments(mappedData);
     } catch (error) {
       console.error('Erro ao buscar agendamentos:', error);
+      // Mantém os dados anteriores em caso de erro conforme solicitado
     } finally {
       setLoading(false);
+      setIsSyncing(false);
     }
   };
 
@@ -221,7 +239,15 @@ export function Agenda() {
       {/* Lista de Próximos Horários */}
       <section className="glass-card p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center justify-between">
-          <span>Próximos Horários</span>
+          <div className="flex items-center gap-2">
+            <span>Próximos Horários</span>
+            {isSyncing && (
+               <div className="flex items-center gap-1 ml-2">
+                 <div className="w-1.5 h-1.5 bg-pink-500 rounded-full animate-ping" />
+                 <span className="text-[9px] text-pink-400 font-bold uppercase tracking-tighter">Sincronizando...</span>
+               </div>
+            )}
+          </div>
           <span className="text-[10px] bg-pink-100 text-pink-600 px-3 py-1 rounded-full uppercase tracking-widest">{appointments.filter(a => a.status === 'pending').length} Ativos</span>
         </h2>
         <div className="space-y-4">
