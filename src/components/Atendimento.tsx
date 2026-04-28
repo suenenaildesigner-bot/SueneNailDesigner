@@ -50,14 +50,14 @@ export function Atendimento() {
 
   const fetchServicos = async () => {
     try {
-      const { data } = await supabase.from('configuracoes_servicos').select('*').order('nome_servico');
+      const { data } = await supabase.from('configuracoes_atendimento').select('*').order('servico');
       if (data && data.length > 0) {
-        // Map data to local interface if needed
+        // Map table columns (servico, valor, gasto) to local interface
         const mapped = data.map((d: any) => ({
-          id: d.id,
-          nome: d.nome_servico,
-          preco_sugerido: d.valor_sugerido,
-          gasto_estimado: d.gasto_medio
+          id: d.servico, // Use servico name as ID for matching if needed
+          nome: d.servico,
+          preco_sugerido: d.valor,
+          gasto_estimado: d.gasto
         }));
         setServicos(mapped);
       } else {

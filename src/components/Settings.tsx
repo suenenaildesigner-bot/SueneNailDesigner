@@ -29,9 +29,9 @@ export function Settings({ onBack }: { onBack: () => void }) {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('configuracoes_servicos')
+        .from('configuracoes_atendimento')
         .select('*')
-        .order('nome_servico');
+        .order('servico');
 
       if (error || !data || data.length === 0) {
          // Fallback to initial values if table doesn't exist yet or is empty
@@ -44,7 +44,14 @@ export function Settings({ onBack }: { onBack: () => void }) {
          ];
          setServicos(initialServicos);
       } else {
-        setServicos(data);
+        // Map table columns (servico, valor, gasto) back to UI model
+        const mappedData = data.map((d: any, index: number) => ({
+          id: String(index + 1), 
+          nome_servico: d.servico,
+          valor_sugerido: d.valor,
+          gasto_medio: d.gasto
+        }));
+        setServicos(mappedData);
       }
     } catch (error) {
       console.error('Error fetching services:', error);
@@ -62,35 +69,40 @@ export function Settings({ onBack }: { onBack: () => void }) {
       setSaving(true);
       
       const payload = servicos.map(s => {
-        const { id, ...rest } = s;
-        
         // Comprehensive sanitization: remove everything except digits, dots and commas
         const cleanValue = (val: any) => {
           const str = String(val).replace(/[^0-9.,]/g, '');
           return Number(str.replace(',', '.'));
         };
 
-        const sanitized = {
-          ...rest,
-          valor_sugerido: cleanValue(rest.valor_sugerido),
-          gasto_medio: cleanValue(rest.gasto_medio)
+        return {
+          servico: s.nome_servico,
+          valor: cleanValue(s.valor_sugerido),
+          gasto: cleanValue(s.gasto_medio)
         };
-
-        // If it's a fallback ID (string '1', '2', etc), let Supabase generate a real UUID
-        return id.length < 5 ? sanitized : { ...sanitized, id };
       });
 
-      const { error } = await supabase
-        .from('configuracoes_servicos')
-        .upsert(payload);
+      console.log('Enviando Payload para configuracoes_atendimento:', payload);
 
-      if (error) throw error;
+      const { error, data } = await supabase
+        .from('configuracoes_atendimento')
+        .upsert(payload, { onConflict: 'servico' });
+
+      if (error) {
+        console.error('ERRO TÉCNICO SUPABASE (configuracoes_atendimento):', {
+          mensagem: error.message,
+          detalhes: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw error;
+      }
       
       alert('Configurações de Preços Atualizadas!');
       fetchServicos(); 
-    } catch (error) {
-      console.error('Error saving:', error);
-      alert('Erro ao salvar configurações.');
+    } catch (error: any) {
+      console.error('Erro ao salvar no Supabase:', error);
+      alert(`Falha no Salvamento: ${error.message || 'Erro desconhecido'}`);
     } finally {
       setSaving(false);
     }
