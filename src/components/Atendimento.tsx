@@ -50,9 +50,16 @@ export function Atendimento() {
 
   const fetchServicos = async () => {
     try {
-      const { data } = await supabase.from('configuracoes_precos').select('*').order('nome');
+      const { data } = await supabase.from('configuracoes_servicos').select('*').order('nome_servico');
       if (data && data.length > 0) {
-        setServicos(data);
+        // Map data to local interface if needed
+        const mapped = data.map((d: any) => ({
+          id: d.id,
+          nome: d.nome_servico,
+          preco_sugerido: d.valor_sugerido,
+          gasto_estimado: d.gasto_medio
+        }));
+        setServicos(mapped);
       } else {
         // Fallback hardcoded services
         setServicos([

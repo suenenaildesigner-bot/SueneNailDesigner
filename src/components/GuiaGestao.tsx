@@ -49,19 +49,19 @@ export function GuiaGestao({ onBack }: { onBack: () => void }) {
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative mb-6"
+            className="relative mb-8"
           >
-            {/* Glow Rosa de Fundo */}
-            <div className="absolute inset-0 bg-pink-400/20 blur-[60px] rounded-full scale-150 -z-10" />
+            {/* Glow Rosa de Fundo mais intenso */}
+            <div className="absolute inset-x-[-50px] inset-y-[-20px] bg-pink-400/30 blur-[80px] rounded-full scale-110 -z-10" />
             
             <img 
               src="/logo2.png" 
               alt="Suene Nail Designer" 
-              className="w-[200px] h-auto object-contain drop-shadow-[0_20px_30px_rgba(242,27,127,0.3)]"
+              className="w-[220px] h-auto object-contain drop-shadow-[0_25px_40px_rgba(242,27,127,0.4)]"
             />
           </motion.div>
           
-          <h1 className="text-3xl font-black uppercase tracking-tighter leading-none" style={{ fontFamily: "'Dancing Script', cursive" }}>
+          <h1 className="text-4xl font-black uppercase tracking-tighter leading-none" style={{ fontFamily: "'Dancing Script', cursive" }}>
             Guia da Empreendedora
           </h1>
           <p className="text-[10px] font-black text-pink-500 uppercase tracking-[0.4em] mt-4 opacity-70">

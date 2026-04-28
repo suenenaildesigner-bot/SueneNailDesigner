@@ -6,9 +6,9 @@ import { GuiaGestao } from './GuiaGestao';
 
 interface Servico {
   id: string;
-  nome: string;
-  preco_sugerido: number;
-  gasto_estimado: number;
+  nome_servico: string;
+  valor_sugerido: number;
+  gasto_medio: number;
 }
 
 export function Settings({ onBack }: { onBack: () => void }) {
@@ -29,21 +29,21 @@ export function Settings({ onBack }: { onBack: () => void }) {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('configuracoes_precos')
+        .from('configuracoes_servicos')
         .select('*')
-        .order('nome');
+        .order('nome_servico');
 
-      if (error) {
-         // Fallback to initial values if table doesn't exist yet
+      if (error || !data || data.length === 0) {
+         // Fallback to initial values if table doesn't exist yet or is empty
          const initialServicos = [
-           { id: '1', nome: 'Molde F1', preco_sugerido: 180, gasto_estimado: 3.5 },
-           { id: '2', nome: 'Banho de Gel', preco_sugerido: 100, gasto_estimado: 1.5 },
-           { id: '3', nome: 'Manutenção F1', preco_sugerido: 130, gasto_estimado: 2.5 },
-           { id: '4', nome: 'Esmaltação em Gel', preco_sugerido: 70, gasto_estimado: 0 },
-           { id: '5', nome: 'Unha Simples', preco_sugerido: 50, gasto_estimado: 0.5 }
+           { id: '1', nome_servico: 'Molde F1', valor_sugerido: 180, gasto_medio: 3.5 },
+           { id: '2', nome_servico: 'Banho de Gel', valor_sugerido: 100, gasto_medio: 1.5 },
+           { id: '3', nome_servico: 'Manutenção F1', valor_sugerido: 130, gasto_medio: 2.5 },
+           { id: '4', nome_servico: 'Esmaltação em Gel', valor_sugerido: 70, gasto_medio: 0 },
+           { id: '5', nome_servico: 'Unha Simples', valor_sugerido: 50, gasto_medio: 0.5 }
          ];
          setServicos(initialServicos);
-      } else if (data) {
+      } else {
         setServicos(data);
       }
     } catch (error) {
@@ -61,13 +61,20 @@ export function Settings({ onBack }: { onBack: () => void }) {
     try {
       setSaving(true);
       
+      const payload = servicos.map(s => {
+        const { id, ...rest } = s;
+        // If it's a fallback ID (string '1', '2', etc), let Supabase generate a real UUID
+        return id.length < 5 ? rest : s;
+      });
+
       const { error } = await supabase
-        .from('configuracoes_precos')
-        .upsert(servicos.map(({ id, ...rest }) => rest));
+        .from('configuracoes_servicos')
+        .upsert(payload);
 
       if (error) throw error;
       
-      alert('Configurações salvas com sucesso!');
+      alert('Configurações de Elite atualizadas com sucesso!');
+      fetchServicos(); // Refresh to get real IDs
     } catch (error) {
       console.error('Error saving:', error);
       alert('Erro ao salvar configurações.');
@@ -130,7 +137,7 @@ export function Settings({ onBack }: { onBack: () => void }) {
                   <div className="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center text-pink-500">
                     <PenTool size={18} />
                   </div>
-                  <h4 className="font-bold text-slate-800 uppercase text-xs tracking-widest">{servico.nome}</h4>
+                  <h4 className="font-bold text-slate-800 uppercase text-xs tracking-widest">{servico.nome_servico}</h4>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
@@ -142,8 +149,8 @@ export function Settings({ onBack }: { onBack: () => void }) {
                         type="number"
                         inputMode="decimal"
                         className="input-glass w-full pl-8 py-3 text-sm font-bold text-slate-800"
-                        value={servico.preco_sugerido}
-                        onChange={e => handleUpdate(servico.id, 'preco_sugerido', parseFloat(e.target.value))}
+                        value={servico.valor_sugerido}
+                        onChange={e => handleUpdate(servico.id, 'valor_sugerido', parseFloat(e.target.value))}
                       />
                     </div>
                   </div>
@@ -153,8 +160,8 @@ export function Settings({ onBack }: { onBack: () => void }) {
                       type="number"
                       inputMode="decimal"
                       className="input-glass w-full py-3 text-sm font-bold text-slate-800"
-                      value={servico.gasto_estimado}
-                      onChange={e => handleUpdate(servico.id, 'gasto_estimado', parseFloat(e.target.value))}
+                      value={servico.gasto_medio}
+                      onChange={e => handleUpdate(servico.id, 'gasto_medio', parseFloat(e.target.value))}
                     />
                   </div>
                 </div>
