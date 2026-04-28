@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Settings as SettingsIcon, ChevronLeft, DollarSign, PenTool, BookOpen } from 'lucide-react';
+import { Save, Settings as SettingsIcon, ChevronLeft, PenTool, BookOpen } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { motion } from 'motion/react';
 import { GuiaGestao } from './GuiaGestao';
@@ -63,8 +63,16 @@ export function Settings({ onBack }: { onBack: () => void }) {
       
       const payload = servicos.map(s => {
         const { id, ...rest } = s;
+        
+        // Ensure values are numbers before sending to Supabase
+        const sanitized = {
+          ...rest,
+          valor_sugerido: Number(String(rest.valor_sugerido).replace(',', '.')),
+          gasto_medio: Number(String(rest.gasto_medio).replace(',', '.'))
+        };
+
         // If it's a fallback ID (string '1', '2', etc), let Supabase generate a real UUID
-        return id.length < 5 ? rest : s;
+        return id.length < 5 ? sanitized : { ...sanitized, id };
       });
 
       const { error } = await supabase
@@ -73,8 +81,8 @@ export function Settings({ onBack }: { onBack: () => void }) {
 
       if (error) throw error;
       
-      alert('Configurações de Elite atualizadas com sucesso!');
-      fetchServicos(); // Refresh to get real IDs
+      alert('Configurações de Preços Atualizadas!');
+      fetchServicos(); 
     } catch (error) {
       console.error('Error saving:', error);
       alert('Erro ao salvar configurações.');
@@ -133,44 +141,44 @@ export function Settings({ onBack }: { onBack: () => void }) {
                 animate={{ opacity: 1, y: 0 }}
                 className="glass-card p-8 border-l-[8px] border-l-pink-500 bg-white/80 shadow-md mb-6"
               >
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="p-4 bg-pink-50 rounded-2xl text-pink-500 shadow-inner">
-                    <PenTool size={20} />
+                <div className="flex items-center gap-5 mb-10">
+                  <div className="p-5 bg-pink-50 rounded-[24px] text-pink-500 shadow-inner">
+                    <PenTool size={22} />
                   </div>
-                  <h4 className="font-black text-slate-800 uppercase text-[13px] tracking-[0.25em]">{servico.nome_servico}</h4>
+                  <h4 className="font-black text-slate-800 uppercase text-[14px] tracking-[0.3em]">{servico.nome_servico}</h4>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <label className="text-[11px] font-black text-pink-400 uppercase tracking-widest ml-1 opacity-80">Preço de Venda</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-4">
+                    <label className="text-[12px] font-black text-pink-400 uppercase tracking-widest ml-1 opacity-80">Preço de Venda</label>
                     <div className="relative group">
-                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-black text-sm pointer-events-none group-focus-within:text-pink-500 transition-colors">
+                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 font-extrabold text-sm pointer-events-none group-focus-within:text-pink-500 transition-colors">
                         R$
                       </div>
                       <input 
                         type="number"
                         step="0.01"
                         inputMode="decimal"
-                        className="input-glass w-full pl-14 py-4 text-base font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none"
+                        className="input-glass w-full pl-16 py-6 text-lg font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none rounded-[24px]"
                         value={servico.valor_sugerido}
-                        onChange={e => handleUpdate(servico.id, 'valor_sugerido', parseFloat(e.target.value) || 0)}
+                        onChange={e => handleUpdate(servico.id, 'valor_sugerido', e.target.value)}
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-3">
-                    <label className="text-[11px] font-black text-pink-400 uppercase tracking-widest ml-1 opacity-80">Consumo de Gel</label>
+                  <div className="space-y-4">
+                    <label className="text-[12px] font-black text-pink-400 uppercase tracking-widest ml-1 opacity-80">Consumo de Gel</label>
                     <div className="relative group">
                       <input 
                         type="number"
                         step="0.1"
                         inputMode="decimal"
-                        className="input-glass w-full px-6 py-4 text-base font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none"
+                        className="input-glass w-full px-8 py-6 text-lg font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none rounded-[24px]"
                         placeholder="Ex: 3.5"
                         value={servico.gasto_medio}
-                        onChange={e => handleUpdate(servico.id, 'gasto_medio', parseFloat(e.target.value) || 0)}
+                        onChange={e => handleUpdate(servico.id, 'gasto_medio', e.target.value)}
                       />
-                      <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase tracking-tighter">Gramas</span>
+                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[11px] font-black text-slate-300 uppercase tracking-tighter">Gramas</span>
                     </div>
                   </div>
                 </div>

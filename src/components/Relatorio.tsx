@@ -37,24 +37,28 @@ export function Relatorio() {
       const TAXA_DESCARTAVEL = 5.00;
       
       const totalG = results.reduce((acc, curr) => acc + (curr.valor_cobrado || 0), 0);
-      const materialC = results.reduce((acc, curr) => acc + (curr.custo_material || 0), 0);
-      const totalTaxa = results.length * TAXA_DESCARTAVEL;
-      const totalC = materialC + totalTaxa;
+      const totalLucro = results.reduce((acc, curr) => acc + (curr.lucro_liquido || 0), 0);
+      const totalC = totalG - totalLucro;
       
       setStats({
         totalGanhos: totalG,
         totalCusto: totalC,
-        lucro: totalG - totalC,
+        lucro: totalLucro,
         ticketMedio: results.length > 0 ? totalG / results.length : 0
       });
 
       // Group by day for the chart
       const last7Days = Array.from({ length: 7 }, (_, i) => {
         const d = subDays(new Date(), 6 - i);
+        const dayStr = format(d, 'yyyy-MM-dd');
+        const dayProfit = results
+          .filter(r => r.data.startsWith(dayStr))
+          .reduce((acc, curr) => acc + (curr.lucro_liquido || 0), 0);
+          
         return {
           name: format(d, 'EEE', { locale: ptBR }),
-          fullDate: format(d, 'yyyy-MM-dd'),
-          lucro: 0
+          fullDate: dayStr,
+          lucro: dayProfit
         };
       });
 
