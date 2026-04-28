@@ -84,10 +84,10 @@ export function WhatsAppModal({ isOpen, onClose, data }: WhatsAppModalProps) {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSend}
-                  className="relative group w-full py-5 bg-[#50fa7b] text-slate-900 font-black rounded-2xl shadow-[0_10px_30px_rgba(80,250,123,0.3)] transition-all text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 overflow-hidden"
+                  className="relative group w-full py-5 bg-[#50fa7b] text-[#064e3b] font-black rounded-2xl shadow-[0_10px_30px_rgba(80,250,123,0.3)] transition-all text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-3 overflow-hidden"
                 >
                   <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shimmer transition-transform" />
-                  <MessageCircle size={18} className="fill-slate-900/10" />
+                  <MessageCircle size={18} className="fill-[#064e3b]/10" />
                   ENVIAR PROTOCOLO
                 </motion.button>
                 

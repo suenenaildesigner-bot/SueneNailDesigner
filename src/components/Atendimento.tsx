@@ -184,12 +184,12 @@ export function Atendimento() {
         <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-3">
-            <div className="p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20">
+            <div className="p-4 bg-white/20 rounded-2xl backdrop-blur-md border border-white/20">
               <Scissors size={24} className="text-white" />
             </div>
-            <h2 className="text-2xl font-black tracking-tight uppercase">Protocolo de <span className="text-pink-100 italic">Elite</span></h2>
+            <h2 className="text-2xl font-black tracking-tight uppercase">PROTOCOLO DE <span className="text-pink-100 italic">ELITE</span></h2>
           </div>
-          <p className="text-pink-50 max-w-[240px] text-xs leading-relaxed font-bold uppercase tracking-widest opacity-80">Gestão Superior de Atendimento e Insumos</p>
+          <p className="text-pink-100 max-w-[240px] text-[10px] leading-relaxed font-black uppercase tracking-[0.2em] opacity-90">Gestão Superior de Atendimento e Insumos</p>
         </div>
       </div>
 

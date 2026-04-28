@@ -177,7 +177,7 @@ export function Agenda() {
       
       {/* Formulário */}
       <section className="glass-card p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center justify-between">
+        <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center justify-between uppercase tracking-tighter">
           <div className="flex items-center gap-2">
             <FilePlus2 className="text-pink-500" /> 
             {editingId ? 'Editar Agendamento' : 'Agendar Cliente'}
@@ -238,7 +238,8 @@ export function Agenda() {
             </select>
           </div>
           
-          <button type="submit" className="btn-gradient w-full py-4 mt-2 font-bold text-lg">
+          <button type="submit" className="relative group w-full py-5 mt-2 font-black text-sm uppercase tracking-[0.2em] bg-[#f21b7f] text-white rounded-[20px] shadow-xl shadow-pink-200 overflow-hidden active:scale-[0.98] transition-all">
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
             {editingId ? 'ATUALIZAR AGENDAMENTO' : 'SALVAR HORÁRIO'}
           </button>
         </form>
