@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { User, Phone, Clock, FilePlus2, Sparkles, CheckCircle2 } from 'lucide-react';
-// import { supabase } from '../lib/supabase'; // To be connected by the user
+import React, { useState, useEffect } from 'react';
+import { User, Phone, Clock, FilePlus2, Sparkles, CheckCircle2, Pencil, Trash2, X } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface Appointment {
   id: string;
@@ -12,29 +12,105 @@ interface Appointment {
 }
 
 export function Agenda() {
-  // Using local state to demonstrate the UI. Later replaced by Supabase fetching.
-  const [appointments, setAppointments] = useState<Appointment[]>([
-    { id: '1', name: 'Maria Silva', whatsapp: '11999999999', date: '2023-11-20T14:30', service: 'Manutenção Fibra', status: 'pending' },
-    { id: '2', name: 'Joana Sousa', whatsapp: '11988888888', date: '2023-11-20T16:00', service: 'Esmaltação em Gel', status: 'pending' },
-  ]);
-
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [formData, setFormData] = useState({ name: '', whatsapp: '', date: '', service: '' });
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleAddAppointment = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newAppointment: Appointment = {
-      id: Date.now().toString(),
-      ...formData,
-      status: 'pending'
-    };
-    setAppointments([...appointments, newAppointment]);
-    setFormData({ name: '', whatsapp: '', date: '', service: '' });
-    // In production: await supabase.from('agenda').insert([newAppointment]);
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch {
+      return dateString;
+    }
   };
 
-  const markCompleted = (id: string) => {
-    setAppointments(appointments.map(app => app.id === id ? { ...app, status: 'completed' } : app));
-    // In production: await supabase.from('agenda').update({ status: 'completed' }).eq('id', id);
+  const fetchAppointments = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('agenda')
+        .select('*')
+        .order('date', { ascending: true });
+
+      if (error) throw error;
+      setAppointments(data || []);
+    } catch (error) {
+      console.error('Error fetching:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editingId) {
+        const { error } = await supabase
+          .from('agenda')
+          .update(formData)
+          .eq('id', editingId);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('agenda')
+          .insert([{ ...formData, status: 'pending' }]);
+        if (error) throw error;
+      }
+      
+      setFormData({ name: '', whatsapp: '', date: '', service: '' });
+      setEditingId(null);
+      fetchAppointments();
+    } catch (error) {
+      alert('Erro ao salvar agendamento');
+      console.error(error);
+    }
+  };
+
+  const handleEdit = (app: Appointment) => {
+    setFormData({
+      name: app.name,
+      whatsapp: app.whatsapp,
+      date: app.date.slice(0, 16), // Format for datetime-local
+      service: app.service
+    });
+    setEditingId(app.id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Deseja realmente excluir este agendamento?')) return;
+    try {
+      const { error } = await supabase.from('agenda').delete().eq('id', id);
+      if (error) throw error;
+      fetchAppointments();
+    } catch (error) {
+      alert('Erro ao excluir');
+      console.error(error);
+    }
+  };
+
+  const markCompleted = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from('agenda')
+        .update({ status: 'completed' })
+        .eq('id', id);
+      if (error) throw error;
+      fetchAppointments();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -42,11 +118,22 @@ export function Agenda() {
       
       {/* Formulário */}
       <section className="glass-card p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <FilePlus2 className="text-pink-500" /> Agendar Cliente
+        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FilePlus2 className="text-pink-500" /> 
+            {editingId ? 'Editar Agendamento' : 'Agendar Cliente'}
+          </div>
+          {editingId && (
+            <button 
+              onClick={() => { setEditingId(null); setFormData({ name: '', whatsapp: '', date: '', service: '' }); }}
+              className="text-gray-400 hover:text-pink-500"
+            >
+              <X size={20} />
+            </button>
+          )}
         </h2>
         
-        <form onSubmit={handleAddAppointment} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="w-full">
             <input 
               required
@@ -92,33 +179,80 @@ export function Agenda() {
             </select>
           </div>
           
-          <button type="submit" className="btn-gradient w-full py-3 mt-2">
-            SALVAR HORÁRIO
+          <button type="submit" className="btn-gradient w-full py-4 mt-2 font-bold text-lg">
+            {editingId ? 'ATUALIZAR AGENDAMENTO' : 'SALVAR HORÁRIO'}
           </button>
         </form>
       </section>
 
       {/* Lista de Próximos Horários */}
       <section className="glass-card p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Próximos Horários</h2>
-        <div className="space-y-3">
-          {appointments.length === 0 ? (
+        <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center justify-between">
+          <span>Próximos Horários</span>
+          <span className="text-[10px] bg-pink-100 text-pink-600 px-3 py-1 rounded-full uppercase tracking-widest">{appointments.filter(a => a.status === 'pending').length} Ativos</span>
+        </h2>
+        <div className="space-y-4">
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+            </div>
+          ) : appointments.length === 0 ? (
             <p className="text-gray-500 text-center py-4">Nenhum agendamento.</p>
           ) : (
             appointments.map(app => (
-              <div key={app.id} className="bg-white/50 border border-white/60 p-4 rounded-xl flex justify-between items-center shadow-sm">
-                <div>
-                  <h3 className={`font-semibold ${app.status === 'completed' ? 'text-gray-400 line-through' : 'text-gray-800'}`}>{app.name}</h3>
-                  <div className="text-xs text-gray-500 mt-1 space-y-1">
-                    <p className="flex items-center gap-1"><Clock size={12}/> {new Date(app.date).toLocaleString('pt-BR')}</p>
-                    <p className="flex items-center gap-1"><Sparkles size={12}/> {app.service}</p>
+              <div 
+                key={app.id} 
+                className={`group relative bg-white/40 border border-white/60 p-5 rounded-[24px] flex justify-between items-center transition-all hover:bg-white/80 hover:shadow-md ${
+                  app.status === 'completed' ? 'opacity-60 bg-gray-50/30' : ''
+                }`}
+              >
+                <div className="flex-1">
+                  <h3 className={`text-lg font-bold ${app.status === 'completed' ? 'text-gray-400 line-through' : 'text-slate-800'}`}>
+                    {app.name}
+                  </h3>
+                  <div className="text-[13px] text-gray-600 mt-2 space-y-1.5">
+                    <p className="flex items-center gap-2 font-medium">
+                      <Clock size={14} className="text-pink-400"/> 
+                      {formatDate(app.date)}
+                    </p>
+                    <p className="flex items-center gap-2 font-medium">
+                      <Sparkles size={14} className="text-pink-400"/> 
+                      {app.service}
+                    </p>
+                    <p className="flex items-center gap-2 font-medium">
+                      <Phone size={14} className="text-pink-400"/> 
+                      {app.whatsapp}
+                    </p>
                   </div>
                 </div>
-                {app.status === 'pending' && (
-                  <button onClick={() => markCompleted(app.id)} className="w-10 h-10 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center hover:bg-pink-200 transition-colors" aria-label="Marcar como concluído">
-                    <CheckCircle2 size={24} />
-                  </button>
-                )}
+
+                <div className="flex flex-col gap-2">
+                  {app.status === 'pending' && (
+                    <button 
+                      onClick={() => markCompleted(app.id)} 
+                      className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center hover:bg-emerald-100 transition-all shadow-sm"
+                      title="Concluir"
+                    >
+                      <CheckCircle2 size={20} />
+                    </button>
+                  )}
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => handleEdit(app)} 
+                      className="w-10 h-10 rounded-2xl bg-pink-50 text-pink-500 flex items-center justify-center hover:bg-pink-100 transition-all shadow-sm"
+                      title="Editar"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(app.id)} 
+                      className="w-10 h-10 rounded-2xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all shadow-sm"
+                      title="Excluir"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
               </div>
             ))
           )}
