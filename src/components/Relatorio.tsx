@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendingUp, Wallet, ArrowDownRight } from 'lucide-react';
+import { TrendingUp, Wallet, ArrowDownRight, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { format, subDays, startOfDay, endOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -10,7 +10,8 @@ export function Relatorio() {
   const [stats, setStats] = useState({
     totalGanhos: 0,
     totalCusto: 0,
-    lucro: 0
+    lucro: 0,
+    ticketMedio: 0
   });
   const [chartData, setChartData] = useState<any[]>([]);
 
@@ -32,14 +33,18 @@ export function Relatorio() {
       if (error) throw error;
 
       const results = data || [];
+      const TAXA_DESCARTAVEL = 5.00;
       
       const totalG = results.reduce((acc, curr) => acc + (curr.valor_cobrado || 0), 0);
-      const totalC = results.reduce((acc, curr) => acc + (curr.custo_material || 0), 0);
+      const materialC = results.reduce((acc, curr) => acc + (curr.custo_material || 0), 0);
+      const totalTaxa = results.length * TAXA_DESCARTAVEL;
+      const totalC = materialC + totalTaxa;
       
       setStats({
         totalGanhos: totalG,
         totalCusto: totalC,
-        lucro: totalG - totalC
+        lucro: totalG - totalC,
+        ticketMedio: results.length > 0 ? totalG / results.length : 0
       });
 
       // Group by day for the chart
@@ -85,6 +90,13 @@ export function Relatorio() {
            <TrendingUp className="text-pink-600 mb-2 h-8 w-8 z-10" />
            <p className="text-[10px] text-gray-400 font-black z-10 uppercase tracking-[0.2em] text-center">Lucro Líquido</p>
            <p className="text-xl font-bold text-pink-600 z-10">R$ {stats.lucro.toFixed(2)}</p>
+        </div>
+
+        <div className="glass-card p-4 flex flex-col justify-center items-center relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-16 h-16 bg-blue-50 rounded-bl-full opacity-50"></div>
+           <Sparkles className="text-blue-500 mb-2 h-8 w-8 z-10" />
+           <p className="text-[10px] text-gray-400 font-black z-10 uppercase tracking-[0.2em] text-center">Ticket Médio</p>
+           <p className="text-xl font-bold text-slate-800 z-10">R$ {stats.ticketMedio.toFixed(2)}</p>
         </div>
       </div>
 

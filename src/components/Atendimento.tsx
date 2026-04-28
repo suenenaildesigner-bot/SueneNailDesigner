@@ -22,6 +22,7 @@ interface SugestaoAgenda {
 export function Atendimento() {
   const [clienteNome, setClienteNome] = useState('');
   const [servico, setServico] = useState('');
+  const [tecnica, setTecnica] = useState('');
   const [valorCobrado, setValorCobrado] = useState('');
   const [valorExtra, setValorExtra] = useState('');
   const [gramatura, setGramatura] = useState('');
@@ -31,10 +32,51 @@ export function Atendimento() {
   const [sucesso, setSucesso] = useState(false);
   const [agendamentoSugerido, setAgendamentoSugerido] = useState<SugestaoAgenda | null>(null);
 
+  const CUSTO_DESCARTAVEL = 5.00;
+
   useEffect(() => {
     fetchPots();
     fetchUpcomingAppointment();
   }, []);
+
+  const handleTecnicaChange = (val: string) => {
+    setTecnica(val);
+    setServico(val);
+    
+    if (val === 'Molde F1') {
+      setGramatura('3.5');
+    } else if (val === 'Banho de Gel') {
+      setGramatura('1.5');
+    } else if (val === 'Manutenção F1') {
+      setGramatura('2.5');
+    } else if (val === 'Esmaltação em Gel') {
+      setGramatura('0');
+    }
+  };
+
+  const calculateLucro = () => {
+    const valor = (parseFloat(valorCobrado) || 0) + (parseFloat(valorExtra) || 0);
+    const qtdGasta = parseFloat(gramatura) || 0;
+    
+    const gel = pots.find(p => p.id === gelSelecionado);
+    let custoGel = 0;
+    if (gel && qtdGasta > 0) {
+      custoGel = (gel.preco / gel.quantidade_total) * qtdGasta;
+    }
+    
+    const custoExtraEsmalte = tecnica === 'Esmaltação em Gel' ? 2.00 : 0;
+    const lucroTotal = valor - custoGel - CUSTO_DESCARTAVEL - custoExtraEsmalte;
+    
+    return {
+      valor,
+      custoGel,
+      custoExtraEsmalte,
+      custoMaterial: custoGel + custoExtraEsmalte + CUSTO_DESCARTAVEL,
+      lucro: Math.max(0, lucroTotal)
+    };
+  };
+
+  const { lucro, custoMaterial: totalCustoReal } = calculateLucro();
 
   const fetchPots = async () => {
     const { data } = await supabase
@@ -115,16 +157,18 @@ export function Atendimento() {
         .eq('id', gelSelecionado);
 
       const totalFinal = (parseFloat(valorCobrado) || 0) + (parseFloat(valorExtra) || 0);
-      const custoMaterial = (gel.preco / gel.quantidade_total) * qtdGasta;
+      const { custoGel, custoExtraEsmalte } = calculateLucro();
+      const materialCostToSave = custoGel + custoExtraEsmalte;
 
       await supabase
         .from('atendimentos')
         .insert([{
           cliente_nome: clienteNome,
           servico: servico,
+          tecnica: tecnica,
           valor_cobrado: totalFinal,
-          custo_material: custoMaterial,
-          gel_usado: gel.nome,
+          custo_material: materialCostToSave,
+          gel_usado: gel.nome || 'N/A',
           quantidade_gasta: qtdGasta,
           data: new Date().toISOString()
         }]);
@@ -134,6 +178,7 @@ export function Atendimento() {
         setSucesso(false);
         setClienteNome('');
         setServico('');
+        setTecnica('');
         setValorCobrado('');
         setValorExtra('');
         setGelSelecionado('');
@@ -197,6 +242,22 @@ export function Atendimento() {
         
         <div className="space-y-4">
           <div className="space-y-1.5">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Técnica Selecionada</label>
+            <select 
+              required
+              className="input-glass w-full px-5 py-4 text-sm font-bold text-slate-800 bg-slate-50/50 appearance-none"
+              value={tecnica}
+              onChange={e => handleTecnicaChange(e.target.value)}
+            >
+              <option value="" disabled>Escolha a técnica...</option>
+              <option value="Molde F1">Molde F1</option>
+              <option value="Manutenção F1">Manutenção F1</option>
+              <option value="Banho de Gel">Banho de Gel</option>
+              <option value="Esmaltação em Gel">Esmaltação em Gel</option>
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Identificação da Cliente</label>
             <input 
               required
@@ -205,18 +266,6 @@ export function Atendimento() {
               className="input-glass w-full px-5 py-4 text-sm font-bold text-slate-800 bg-slate-50/50"
               value={clienteNome}
               onChange={e => setClienteNome(e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Serviço Realizado</label>
-            <input 
-              required
-              type="text" 
-              placeholder="Ex: Manutenção Gel" 
-              className="input-glass w-full px-5 py-4 text-sm font-bold text-slate-800 bg-slate-50/50"
-              value={servico}
-              onChange={e => setServico(e.target.value)}
             />
           </div>
         </div>
@@ -276,6 +325,31 @@ export function Atendimento() {
               onChange={e => setGramatura(e.target.value)}
             />
           </div>
+        </div>
+
+        <div className="p-4 bg-pink-50/50 rounded-3xl border border-pink-100/50 flex flex-col gap-3 mt-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-black text-pink-400 uppercase tracking-widest">Lucro Líquido Estimado</p>
+              <p className="text-xl font-black text-pink-600">R$ {lucro.toFixed(2)}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Custo Total</p>
+              <p className="text-xs font-bold text-slate-500">R$ {totalCustoReal.toFixed(2)}</p>
+            </div>
+          </div>
+          
+          {(valorCobrado || valorExtra) && lucro <= 2.00 && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="px-3 py-2 bg-pink-100/50 rounded-xl border border-pink-200"
+            >
+              <p className="text-[10px] text-pink-600 font-bold flex items-center gap-2">
+                <Sparkles size={12} /> Atenção: Margem de lucro muito baixa para este serviço
+              </p>
+            </motion.div>
+          )}
         </div>
 
         <button 
