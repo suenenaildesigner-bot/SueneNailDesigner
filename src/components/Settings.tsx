@@ -93,7 +93,7 @@ export function Settings({ onBack }: { onBack: () => void }) {
         throw error;
       }
       
-      alert('Configurações Salvas e Banco Sincronizado!');
+      alert('Sistema de Elite Sincronizado!');
       fetchServicos(); 
     } catch (error: any) {
       console.error('Erro ao salvar no Supabase:', error);
@@ -105,21 +105,21 @@ export function Settings({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="min-h-screen bg-slate-50/50 pb-20">
-      <header className="p-6 flex items-center gap-4 sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-pink-100/50">
-        <button onClick={onBack} className="p-3 bg-white rounded-2xl shadow-sm text-slate-400">
-          <ChevronLeft size={20} />
+      <header className="p-8 flex items-center gap-5 sticky top-0 bg-white/90 backdrop-blur-md z-50 border-b border-pink-100 shadow-sm">
+        <button onClick={onBack} className="p-4 bg-white rounded-2xl shadow-sm text-slate-400 active:scale-95 transition-all">
+          <ChevronLeft size={22} />
         </button>
-        <h2 className="text-xl font-black text-slate-800 uppercase tracking-tighter flex items-center gap-2">
-          <SettingsIcon size={20} className="text-pink-500" />
+        <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter flex items-center gap-3">
+          <SettingsIcon size={22} className="text-[#f21b7f]" />
           Configurações de Elite
         </h2>
       </header>
 
-      <main className="p-6 space-y-6">
-        <div className="bg-gradient-to-br from-[#f21b7f] to-pink-500 rounded-[40px] p-8 text-white shadow-xl relative overflow-hidden">
-          <div className="absolute top-[-20%] right-[-10%] w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
-          <h3 className="text-lg font-black tracking-tight mb-2 uppercase">Gestão de Preços</h3>
-          <p className="text-pink-50 text-xs font-medium leading-relaxed opacity-80">
+      <main className="p-8 space-y-10">
+        <div className="bg-gradient-to-br from-[#f21b7f] to-pink-500 rounded-[50px] p-10 text-white shadow-2xl relative overflow-hidden">
+          <div className="absolute top-[-20%] right-[-10%] w-56 h-56 bg-white/10 rounded-full blur-3xl"></div>
+          <h3 className="text-xl font-black tracking-tight mb-3 uppercase">Gestão de Preços</h3>
+          <p className="text-pink-50 text-sm font-medium leading-relaxed opacity-90">
             Ajuste os valores de venda e o consumo médio de material para cada técnica oferecida.
           </p>
         </div>
@@ -140,35 +140,35 @@ export function Settings({ onBack }: { onBack: () => void }) {
           <ChevronLeft size={20} className="text-slate-300 rotate-180 group-hover:translate-x-1 transition-transform" />
         </button>
 
-        <div className="space-y-6">
+        <div className="space-y-8">
           {loading ? (
-            <div className="p-20 flex justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+            <div className="p-24 flex justify-center">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#f21b7f]"></div>
             </div>
           ) : (
             servicos.map(servico => (
               <motion.div 
                 key={servico.id}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass-card p-8 border-l-[8px] border-l-pink-500 bg-white/80 shadow-md mb-6"
+                className="glass-card p-10 border-l-[10px] border-l-[#f21b7f] bg-white shadow-xl mb-8"
               >
-                <div className="flex items-center gap-5 mb-10">
-                  <div className="p-5 bg-pink-50 rounded-[24px] text-pink-500 shadow-inner">
-                    <PenTool size={22} />
+                <div className="flex items-center gap-6 mb-12">
+                  <div className="p-6 bg-pink-50 rounded-[30px] text-[#f21b7f] shadow-inner">
+                    <PenTool size={24} />
                   </div>
-                  <h4 className="font-black text-slate-800 uppercase text-[14px] tracking-[0.3em]">{servico.nome_servico}</h4>
+                  <h4 className="font-black text-slate-800 uppercase text-[16px] tracking-[0.4em]">{servico.nome_servico}</h4>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                  <div className="space-y-5">
-                    <label className="text-[12px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Preço do Serviço</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
+                  <div className="space-y-6">
+                    <label className="text-[14px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Preço do Serviço</label>
                     <div className="relative group">
                       <input 
                         type="number"
                         step="0.01"
                         inputMode="decimal"
-                        className="input-glass w-full px-8 py-7 text-xl font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none rounded-[28px] bg-slate-50/30"
+                        className="input-glass w-full px-10 py-8 text-2xl font-black text-slate-700 hover:border-pink-200 focus:border-[#f21b7f] transition-all outline-none rounded-[32px] bg-slate-50/50"
                         placeholder="0.00"
                         value={servico.valor_sugerido}
                         onChange={e => handleUpdate(servico.id, 'valor_sugerido', e.target.value)}
@@ -176,14 +176,14 @@ export function Settings({ onBack }: { onBack: () => void }) {
                     </div>
                   </div>
                   
-                  <div className="space-y-5">
-                    <label className="text-[12px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Consumo de Gel</label>
+                  <div className="space-y-6">
+                    <label className="text-[14px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Consumo de Gel</label>
                     <div className="relative group">
                       <input 
                         type="number"
                         step="0.1"
                         inputMode="decimal"
-                        className="input-glass w-full px-8 py-7 text-xl font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none rounded-[28px] bg-slate-50/30"
+                        className="input-glass w-full px-10 py-8 text-2xl font-black text-slate-700 hover:border-pink-200 focus:border-[#f21b7f] transition-all outline-none rounded-[32px] bg-slate-50/50"
                         placeholder="Ex: 3.5"
                         value={servico.gasto_medio}
                         onChange={e => handleUpdate(servico.id, 'gasto_medio', e.target.value)}
@@ -199,10 +199,10 @@ export function Settings({ onBack }: { onBack: () => void }) {
         <button 
           onClick={handleSave}
           disabled={saving}
-          className="btn-gradient w-full py-5 text-sm font-black tracking-[0.2em] flex items-center justify-center gap-3 shadow-xl shadow-pink-200 mt-4 disabled:opacity-50"
+          className="btn-gradient w-full py-7 text-base font-black tracking-[0.3em] flex items-center justify-center gap-4 shadow-2xl shadow-pink-200/50 mt-8 disabled:opacity-50 rounded-[35px]"
         >
           {saving ? 'SALVANDO...' : (
-            <><Save size={18} /> SALVAR ATUALIZAÇÕES</>
+            <><Save size={22} /> SALVAR ATUALIZAÇÕES</>
           )}
         </button>
       </main>

@@ -54,7 +54,7 @@ export function GuiaGestao({ onBack }: { onBack: () => void }) {
             <img 
               src="/logo2.png" 
               alt="Suene Nail Designer" 
-              className="w-[60%] max-w-[400px] h-auto object-contain drop-shadow-[0_20px_50px_rgba(242,27,127,0.3)] transition-transform hover:scale-105 duration-700"
+              className="w-[260px] h-auto object-contain drop-shadow-[0_20px_50px_rgba(242,27,127,0.3)] transition-transform hover:scale-105 duration-700"
             />
           </motion.div>
           
