@@ -152,23 +152,23 @@ export function Settings({ onBack }: { onBack: () => void }) {
                 key={servico.id}
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass-card p-10 border-l-[10px] border-l-[#f21b7f] bg-white shadow-xl mb-8"
+                className="glass-card p-10 border-l-[10px] border-l-[#f21b7f] bg-white/70 backdrop-blur-md shadow-2xl mb-8"
               >
                 <div className="flex items-center gap-6 mb-12">
                   <div className="p-6 bg-pink-50 rounded-[30px] text-[#f21b7f] shadow-inner">
                     <PenTool size={24} />
                   </div>
-                  <h4 className="font-black text-slate-800 uppercase text-[16px] tracking-[0.4em]">{servico.nome_servico}</h4>
+                  <h4 className="font-black text-slate-800 uppercase text-[16px] tracking-[0.4em] drop-shadow-sm">{servico.nome_servico}</h4>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-14">
                   <div className="space-y-6">
-                    <label className="text-[14px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Preço do Serviço</label>
+                    <label className="text-[14px] font-black text-[#f21b7f] uppercase tracking-widest ml-1 drop-shadow-sm">Preço do Serviço</label>
                     <div className="relative group">
                       <input 
                         type="text"
                         inputMode="decimal"
-                        className="input-glass w-full px-10 py-8 text-2xl font-black text-slate-700 hover:border-pink-200 focus:border-[#f21b7f] transition-all outline-none rounded-[32px] bg-slate-50/50"
+                        className="input-glass w-full px-10 py-9 text-3xl font-black text-slate-800 hover:border-pink-200 focus:border-[#f21b7f] transition-all outline-none rounded-[35px] bg-white/50 border-2 border-transparent focus:bg-white/90 shadow-inner"
                         placeholder="0.00"
                         value={servico.valor_sugerido}
                         onChange={e => handleUpdate(servico.id, 'valor_sugerido', e.target.value)}
@@ -177,12 +177,12 @@ export function Settings({ onBack }: { onBack: () => void }) {
                   </div>
                   
                   <div className="space-y-6">
-                    <label className="text-[14px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Consumo de Gel</label>
+                    <label className="text-[14px] font-black text-[#f21b7f] uppercase tracking-widest ml-1 drop-shadow-sm">Consumo de Gel</label>
                     <div className="relative group">
                       <input 
                         type="text"
                         inputMode="decimal"
-                        className="input-glass w-full px-10 py-8 text-2xl font-black text-slate-700 hover:border-pink-200 focus:border-[#f21b7f] transition-all outline-none rounded-[32px] bg-slate-50/50"
+                        className="input-glass w-full px-10 py-9 text-3xl font-black text-slate-800 hover:border-pink-200 focus:border-[#f21b7f] transition-all outline-none rounded-[35px] bg-white/50 border-2 border-transparent focus:bg-white/90 shadow-inner"
                         placeholder="Ex: 3.5"
                         value={servico.gasto_medio}
                         onChange={e => handleUpdate(servico.id, 'gasto_medio', e.target.value)}
