@@ -158,21 +158,21 @@ export function Atendimento() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mx-4 p-5 bg-white/60 backdrop-blur-xl rounded-[32px] border-2 border-[#e5b182]/20 flex items-center justify-between shadow-xl shadow-[#e5b182]/5"
+            className="mx-4 p-5 bg-white/60 backdrop-blur-xl rounded-[32px] border-2 border-pink-100 flex items-center justify-between shadow-xl shadow-pink-200/10"
           >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-[#fdfcfb] to-[#e2d1c3] rounded-2xl flex items-center justify-center text-[#e5b182] shadow-sm border border-white">
+              <div className="w-12 h-12 bg-pink-50 rounded-2xl flex items-center justify-center text-pink-500 shadow-sm border border-white">
                 <User size={22} />
               </div>
               <div>
-                <p className="text-[10px] font-black text-[#e5b182] uppercase tracking-[0.2em]">Sugerido agora</p>
+                <p className="text-[10px] font-black text-pink-400 uppercase tracking-[0.2em]">Sugerido agora</p>
                 <h4 className="font-black text-slate-800 text-sm tracking-tight">{agendamentoSugerido.cliente_nome}</h4>
                 <p className="text-[10px] text-slate-400 font-bold uppercase">{agendamentoSugerido.servico}</p>
               </div>
             </div>
             <button 
               onClick={handleApplySuggestion}
-              className="px-5 py-2.5 bg-slate-900 text-[#e5b182] text-[10px] font-black rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md uppercase tracking-widest"
+              className="px-5 py-2.5 bg-[#f21b7f] text-white text-[10px] font-black rounded-xl hover:scale-105 active:scale-95 transition-all shadow-md uppercase tracking-widest"
             >
               PREENCHER
             </button>
@@ -180,20 +180,20 @@ export function Atendimento() {
         )}
       </AnimatePresence>
 
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-[48px] p-10 text-white shadow-2xl relative overflow-hidden mx-4">
-        <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-[#e5b182]/10 rounded-full blur-3xl"></div>
+      <div className="bg-gradient-to-br from-pink-500 to-pink-600 rounded-[48px] p-10 text-white shadow-2xl relative overflow-hidden mx-4">
+        <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-3">
             <div className="p-4 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20">
-              <Scissors size={24} className="text-[#e5b182]" />
+              <Scissors size={24} className="text-white" />
             </div>
-            <h2 className="text-2xl font-black tracking-tight uppercase">Protocolo de <span className="text-[#e5b182]">Elite</span></h2>
+            <h2 className="text-2xl font-black tracking-tight uppercase">Protocolo de <span className="text-pink-100 italic">Elite</span></h2>
           </div>
-          <p className="text-slate-400 max-w-[240px] text-xs leading-relaxed font-bold uppercase tracking-widest opacity-80">Gestão Superior de Atendimento e Insumos</p>
+          <p className="text-pink-50 max-w-[240px] text-xs leading-relaxed font-bold uppercase tracking-widest opacity-80">Gestão Superior de Atendimento e Insumos</p>
         </div>
       </div>
 
-      <form onSubmit={handleDescontar} className="glass-card p-8 space-y-6 mt-[-50px] relative z-20 mx-6 shadow-2xl border-b-8 border-b-slate-900/10">
+      <form onSubmit={handleDescontar} className="glass-card p-8 space-y-6 mt-[-50px] relative z-20 mx-6 shadow-2xl border-b-8 border-b-pink-100">
         
         <div className="space-y-4">
           <div className="space-y-1.5">
@@ -241,7 +241,7 @@ export function Atendimento() {
               type="number" 
               step="0.01"
               placeholder="+ 0,00" 
-              className="input-glass w-full px-4 py-4 text-lg font-black text-[#e5b182]"
+              className="input-glass w-full px-4 py-4 text-lg font-black text-pink-600"
               value={valorExtra}
               onChange={e => setValorExtra(e.target.value)}
             />
@@ -281,9 +281,9 @@ export function Atendimento() {
         <button 
           type="submit" 
           disabled={loading || sucesso}
-          className="relative group w-full py-6 mt-4 flex items-center justify-center gap-3 disabled:opacity-50 font-black tracking-[0.2em] text-sm bg-slate-900 text-[#e5b182] rounded-[24px] shadow-2xl active:scale-[0.98] transition-all overflow-hidden"
+          className="relative group w-full py-6 mt-4 flex items-center justify-center gap-3 disabled:opacity-50 font-black tracking-[0.2em] text-sm bg-[#f21b7f] text-white rounded-[24px] shadow-xl shadow-pink-200 active:scale-[0.98] transition-all overflow-hidden"
         >
-          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer" />
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
           <Sparkles size={18} />
           CONCLUIR ATENDIMENTO
         </button>
@@ -300,14 +300,14 @@ export function Atendimento() {
             <motion.div 
               initial={{ scale: 0.8, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              className="flex flex-col items-center gap-6 p-12 bg-white rounded-[60px] border-4 border-[#e5b182]/40 shadow-[0_40px_100px_rgba(229,177,130,0.5)]"
+              className="flex flex-col items-center gap-6 p-12 bg-white rounded-[60px] border-4 border-pink-100 shadow-[0_40px_100px_rgba(242,27,127,0.15)]"
             >
-              <div className="w-24 h-24 bg-gradient-to-br from-[#fdfcfb] to-[#e2d1c3] rounded-full flex items-center justify-center text-[#e5b182] shadow-inner">
+              <div className="w-24 h-24 bg-pink-50 rounded-full flex items-center justify-center text-pink-500 shadow-inner">
                 <CheckCircle2 size={60} />
               </div>
               <div className="text-center">
                 <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter mb-1">Finalizado</h3>
-                <p className="text-xs font-black text-[#e5b182] uppercase tracking-widest">Protocolo Concluído com Sucesso</p>
+                <p className="text-xs font-black text-pink-500 uppercase tracking-widest">Protocolo Concluído com Sucesso</p>
               </div>
             </motion.div>
           </motion.div>
