@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Phone, Clock, FilePlus2, Sparkles, CheckCircle2, Pencil, Trash2, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { ConfirmModal } from './ConfirmModal';
 
 interface Appointment {
   id: string;
@@ -16,6 +17,8 @@ export function Agenda() {
   const [formData, setFormData] = useState({ name: '', whatsapp: '', date: '', service: '' });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{id: string, name: string} | null>(null);
 
   useEffect(() => {
     fetchAppointments();
@@ -111,11 +114,18 @@ export function Agenda() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Deseja realmente excluir este agendamento?')) return;
+  const handleDeleteClick = (app: Appointment) => {
+    setItemToDelete({ id: app.id, name: app.name });
+    setModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
     try {
-      const { error } = await supabase.from('agenda').delete().eq('id', id);
+      const { error } = await supabase.from('agenda').delete().eq('id', itemToDelete.id);
       if (error) throw error;
+      setModalOpen(false);
+      setItemToDelete(null);
       fetchAppointments();
     } catch (error) {
       alert('Erro ao excluir');
@@ -268,7 +278,7 @@ export function Agenda() {
                       <Pencil size={18} />
                     </button>
                     <button 
-                      onClick={() => handleDelete(app.id)} 
+                      onClick={() => handleDeleteClick(app)} 
                       className="w-10 h-10 rounded-2xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-rose-50 hover:text-rose-500 transition-all shadow-sm"
                       title="Excluir"
                     >
@@ -281,6 +291,13 @@ export function Agenda() {
           )}
         </div>
       </section>
+
+      <ConfirmModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        onConfirm={confirmDelete} 
+        itemText={itemToDelete?.name} 
+      />
 
     </div>
   );

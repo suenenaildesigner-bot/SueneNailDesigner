@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { PackageOpen, Plus, Activity } from 'lucide-react';
+import { PackageOpen, Plus, Activity, Trash2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { ConfirmModal } from './ConfirmModal';
 
 interface Pot {
   id: string;
@@ -15,6 +16,8 @@ export function Estoque() {
   const [pots, setPots] = useState<Pot[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{id: string, name: string} | null>(null);
   const [formData, setFormData] = useState({ marca: '', nome: '', preco: '', weight: '' });
 
   useEffect(() => {
@@ -61,6 +64,25 @@ export function Estoque() {
     } catch (error) {
       console.error('Error adding product:', error);
       alert('Erro ao cadastrar produto');
+    }
+  };
+
+  const handleDeleteClick = (pot: Pot) => {
+    setItemToDelete({ id: pot.id, name: `${pot.marca} ${pot.nome}` });
+    setModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    try {
+      const { error } = await supabase.from('estoque').delete().eq('id', itemToDelete.id);
+      if (error) throw error;
+      setModalOpen(false);
+      setItemToDelete(null);
+      fetchInventory();
+    } catch (error) {
+      alert('Erro ao excluir produto');
+      console.error(error);
     }
   };
 
@@ -136,6 +158,12 @@ export function Estoque() {
                   <span className="text-xs font-bold bg-pink-50 px-3 py-1.5 rounded-full text-pink-600 border border-pink-100">
                     R$ {pot.preco.toFixed(2)}
                   </span>
+                  <button 
+                    onClick={() => handleDeleteClick(pot)}
+                    className="text-gray-400 hover:text-rose-500 p-2 rounded-xl transition-colors"
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
                 
                 <div className="flex items-center justify-between mt-6 mb-2">
@@ -160,6 +188,13 @@ export function Estoque() {
           })
         )}
       </div>
+
+      <ConfirmModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        onConfirm={confirmDelete} 
+        itemText={itemToDelete?.name} 
+      />
     </div>
   );
 }
