@@ -37,14 +37,14 @@ export function Atendimento() {
       <form onSubmit={handleDescontar} className="glass-card p-6 space-y-6 mt-[-20px] relative z-20 mx-2">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-600 block">Valor Cobrado (R$)</label>
-          <div className="relative">
-            <DollarSign className="absolute left-3 top-3.5 h-5 w-5 text-green-500" />
+          <div className="relative group">
+            <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500 group-focus-within:scale-110 transition-transform" />
             <input 
               required
               type="number" 
               step="0.01"
               placeholder="Ex: 120.00" 
-              className="input-glass w-full pl-10 text-lg font-semibold text-gray-800"
+              className="input-glass w-full pl-12 text-lg font-bold text-gray-800"
               value={valorCobrado}
               onChange={e => setValorCobrado(e.target.value)}
             />
@@ -52,27 +52,36 @@ export function Atendimento() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-gray-600 block flex items-center gap-1"><Droplet size={16} className="text-pink-400"/> Qual gel usou?</label>
-          <select 
-            required
-            className="input-glass w-full h-[50px]"
-            value={gelSelecionado}
-            onChange={e => setGelSelecionado(e.target.value)}
-          >
-            <option value="" disabled>Selecione um pote de gel...</option>
-            {pots.map(pot => (
-              <option key={pot.id} value={pot.id}>{pot.name}</option>
-            ))}
-          </select>
+          <label className="text-sm font-bold text-gray-700 block flex items-center gap-2">
+            <Droplet size={16} className="text-pink-500"/> Qual gel usou?
+          </label>
+          <div className="relative group">
+             <select 
+              required
+              className="input-glass w-full appearance-none pr-10"
+              value={gelSelecionado}
+              onChange={e => setGelSelecionado(e.target.value)}
+            >
+              <option value="" disabled>Selecione um pote de gel...</option>
+              {pots.map(pot => (
+                <option key={pot.id} value={pot.id}>{pot.name}</option>
+              ))}
+            </select>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-focus-within:text-pink-500">
+               <Calculator size={18} />
+            </div>
+          </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-gray-600 block flex items-center gap-1"><Calculator size={16} className="text-gray-400"/> Quantidade gasta (g)</label>
+          <label className="text-sm font-bold text-gray-700 block flex items-center gap-2">
+             <Calculator size={16} className="text-pink-500"/> Quantidade gasta (g)
+          </label>
           <input 
             required
             type="number" 
             step="0.1"
-            className="input-glass w-full text-gray-700"
+            className="input-glass w-full text-gray-900 font-bold"
             value={gramatura}
             onChange={e => setGramatura(e.target.value)}
           />

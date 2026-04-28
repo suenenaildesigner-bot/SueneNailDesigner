@@ -65,7 +65,7 @@ export function Login({ onLogin }: LoginProps) {
             <input
               type="email"
               required
-              className="w-full pl-12 pr-4 py-4 bg-white/90 border border-pink-100 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#f21b7f] focus:ring-4 focus:ring-[#f21b7f]/10 transition-all text-[16px]"
+              className="input-glass pl-12"
               placeholder="E-mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -77,7 +77,7 @@ export function Login({ onLogin }: LoginProps) {
             <input
               type={showPassword ? "text" : "password"}
               required
-              className="w-full pl-12 pr-12 py-4 bg-white/90 border border-pink-100 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#f21b7f] focus:ring-4 focus:ring-[#f21b7f]/10 transition-all text-[16px]"
+              className="input-glass pl-12 pr-12"
               placeholder="Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

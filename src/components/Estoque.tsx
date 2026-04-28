@@ -50,13 +50,29 @@ export function Estoque() {
       {isAdding && (
         <form onSubmit={handleAddPot} className="glass-card p-6 animate-in slide-in-from-top-2">
           <h3 className="font-semibold text-gray-700 mb-4">Cadastrar Pote</h3>
-          <div className="space-y-3">
-            <input required type="text" placeholder="Nome do Produto (Ex: Vólia Gel)" className="input-glass w-full" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-            <div className="grid grid-cols-2 gap-3">
-              <input required type="number" step="0.01" placeholder="Preço (R$)" className="input-glass w-full" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
-              <input required type="number" step="1" placeholder="Peso (g)" className="input-glass w-full" value={formData.weight} onChange={e => setFormData({...formData, weight: e.target.value})} />
+          <div className="space-y-4">
+            <div className="relative group">
+              <PackageOpen className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-pink-500 transition-colors" />
+              <input 
+                required 
+                type="text" 
+                placeholder="Nome do Produto (Ex: Vólia Gel)" 
+                className="input-glass w-full pl-12" 
+                value={formData.name} 
+                onChange={e => setFormData({...formData, name: e.target.value})} 
+              />
             </div>
-            <button type="submit" className="btn-gradient w-full py-3 mt-2">CADASTRAR</button>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="relative group">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold group-focus-within:text-pink-500 transition-colors">R$</span>
+                <input required type="number" step="0.01" placeholder="Preço" className="input-glass w-full pl-10" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} />
+              </div>
+              <div className="relative group">
+                <Activity className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-pink-500 transition-colors" />
+                <input required type="number" step="1" placeholder="Peso (g)" className="input-glass w-full pl-12" value={formData.weight} onChange={e => setFormData({...formData, weight: e.target.value})} />
+              </div>
+            </div>
+            <button type="submit" className="btn-gradient w-full py-4 mt-2 font-bold text-lg">CADASTRAR PRODUTO</button>
           </div>
         </form>
       )}

@@ -32,7 +32,7 @@
   }
   
   .glass-card {
-    @apply bg-white/45 backdrop-blur-[12px] border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.05)] rounded-[24px];
+    @apply bg-white border border-white shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-[28px];
   }
 
   .btn-gradient {
@@ -41,7 +41,7 @@
   }
   
   .input-glass {
-    @apply bg-white/80 border border-black/10 rounded-[10px] w-full p-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#FF1493] focus:ring-1 focus:ring-[#FF1493] transition-all;
+    @apply bg-white border border-pink-100 rounded-2xl w-full p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#f21b7f] focus:ring-4 focus:ring-[#f21b7f]/10 transition-all font-medium;
   }
 }
 
