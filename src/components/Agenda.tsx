@@ -41,12 +41,23 @@ export function Agenda() {
       const { data, error } = await supabase
         .from('agenda')
         .select('*')
-        .order('date', { ascending: true });
+        .order('data_hora', { ascending: true });
 
       if (error) throw error;
-      setAppointments(data || []);
+      
+      // Map database columns back to UI state if needed, or update Appointment interface
+      const mappedData = (data || []).map((app: any) => ({
+        id: app.id,
+        name: app.cliente_nome,
+        whatsapp: app.whatsapp,
+        date: app.data_hora,
+        service: app.servico,
+        status: app.status
+      }));
+
+      setAppointments(mappedData);
     } catch (error) {
-      console.error('Error fetching:', error);
+      console.error('Erro ao buscar agendamentos:', error);
     } finally {
       setLoading(false);
     }
@@ -54,26 +65,38 @@ export function Agenda() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    
+    // Preparar dados para o formato do banco
+    const dbPayload = {
+      cliente_nome: formData.name,
+      whatsapp: formData.whatsapp,
+      data_hora: formData.date,
+      servico: formData.service,
+    };
+
     try {
       if (editingId) {
         const { error } = await supabase
           .from('agenda')
-          .update(formData)
+          .update(dbPayload)
           .eq('id', editingId);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('agenda')
-          .insert([{ ...formData, status: 'pending' }]);
+          .insert([{ ...dbPayload, status: 'pending' }]);
         if (error) throw error;
       }
       
       setFormData({ name: '', whatsapp: '', date: '', service: '' });
       setEditingId(null);
-      fetchAppointments();
-    } catch (error) {
-      alert('Erro ao salvar agendamento');
-      console.error(error);
+      await fetchAppointments();
+    } catch (error: any) {
+      console.error('ERRO DETALHADO SUPABASE:', error);
+      alert(`Erro ao salvar: ${error.message || 'Verifique o console'}`);
+    } finally {
+      setLoading(false);
     }
   };
 
