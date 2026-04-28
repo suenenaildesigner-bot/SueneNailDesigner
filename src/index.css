@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-pink-hot: #FF1493;
+  --color-pink-soft: #FFB6C1;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: #ff99cc;
+    /* Imagem de fundo movida para a pasta public */
+    background-image: url('/Bclogin.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #333333;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/45 backdrop-blur-[15px] border border-white/60;
+  }
+  
+  .glass-card {
+    @apply bg-white/45 backdrop-blur-[12px] border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.05)] rounded-[24px];
+  }
+
+  .btn-gradient {
+    background: linear-gradient(135deg, #FF1493 0%, #FF69B4 100%);
+    @apply text-white border-none py-3 px-6 rounded-xl font-semibold cursor-pointer uppercase text-[13px] tracking-[0.5px] shadow-md hover:shadow-[0_4px_12px_rgba(255,20,147,0.3)] transition-all;
+  }
+  
+  .input-glass {
+    @apply bg-white/80 border border-black/10 rounded-[10px] w-full p-3 text-gray-800 placeholder-gray-500 focus:outline-none focus:border-[#FF1493] focus:ring-1 focus:ring-[#FF1493] transition-all;
+  }
+}
+
