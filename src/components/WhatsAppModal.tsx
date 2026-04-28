@@ -60,13 +60,19 @@ export function WhatsAppModal({ isOpen, onClose, data }: WhatsAppModalProps) {
             </button>
 
             <div className="flex flex-col items-center text-center gap-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#fdfcfb] to-[#e2d1c3] rounded-3xl flex items-center justify-center text-[#e5b182] shadow-lg border border-white">
-                <Sparkles size={32} />
+              <div className="w-28 h-28 flex items-center justify-center relative">
+                <div className="absolute inset-0 bg-[#e5b182]/20 blur-2xl rounded-full" />
+                <img 
+                  src="/logo2.png" 
+                  alt="Logo Suene Nail" 
+                  className="w-full h-full object-contain relative z-10 rounded-3xl drop-shadow-[0_0_20px_rgba(229,177,130,0.5)]"
+                  onError={(e) => (e.currentTarget.src = 'https://api.iconify.design/lucide:sparkles.svg?color=%23e5b182')}
+                />
               </div>
               
               <div className="space-y-3">
-                <h2 className="text-xl font-bold text-slate-800 tracking-tight uppercase px-4">
-                  Confirmação <span className="text-[#e5b182]">Digital</span>
+                <h2 className="text-xl font-black text-slate-800 tracking-[0.1em] uppercase px-4">
+                  CONFIRMAÇÃO <span className="text-[#e5b182]">DIGITAL</span>
                 </h2>
                 <p className="text-slate-500 text-sm font-medium leading-relaxed">
                   Deseja notificar a cliente <span className="text-slate-800 font-bold">{data.name}</span> sobre este atendimento exclusivo?
