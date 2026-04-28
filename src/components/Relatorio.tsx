@@ -66,8 +66,7 @@ export function Relatorio() {
         const dayMatch = last7Days.find(d => d.fullDate === dateStr);
         
         const serviceName = val.tecnica || val.servico || 'Não Definido';
-        const lucroAtendimento = (val.valor_cobrado || 0) - (val.custo_material || 0) - TAXA_DESCARTAVEL;
-        const lucroFinal = Math.max(0, lucroAtendimento);
+        const lucroFinal = val.lucro_liquido || 0;
 
         if (dayMatch) {
           dayMatch.lucro += lucroFinal;

@@ -23,12 +23,12 @@ export function Settings({ onBack }: { onBack: () => void }) {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('servicos')
+        .from('configuracoes_precos')
         .select('*')
         .order('nome');
 
       if (error) {
-         // Se a tabela não existir, vamos usar dados iniciais baseados no que o Carlos pediu
+         // Fallback to initial values if table doesn't exist yet
          const initialServicos = [
            { id: '1', nome: 'Molde F1', preco_sugerido: 180, gasto_estimado: 3.5 },
            { id: '2', nome: 'Banho de Gel', preco_sugerido: 100, gasto_estimado: 1.5 },
@@ -54,10 +54,13 @@ export function Settings({ onBack }: { onBack: () => void }) {
   const handleSave = async () => {
     try {
       setSaving(true);
-      // Aqui tentaríamos salvar no Supabase
-      // Como não temos certeza se a tabela existe, vamos apenas simular sucesso por enquanto
-      // Em uma aplicação real, faríamos um upsert na tabela 'servicos'
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const { error } = await supabase
+        .from('configuracoes_precos')
+        .upsert(servicos.map(({ id, ...rest }) => rest));
+
+      if (error) throw error;
+      
       alert('Configurações salvas com sucesso!');
     } catch (error) {
       console.error('Error saving:', error);

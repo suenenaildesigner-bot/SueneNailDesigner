@@ -50,7 +50,7 @@ export function Atendimento() {
 
   const fetchServicos = async () => {
     try {
-      const { data } = await supabase.from('servicos').select('*').order('nome');
+      const { data } = await supabase.from('configuracoes_precos').select('*').order('nome');
       if (data && data.length > 0) {
         setServicos(data);
       } else {
@@ -193,7 +193,7 @@ export function Atendimento() {
         .eq('id', gelSelecionado);
 
       const totalFinal = (parseFloat(valorCobrado) || 0) + (parseFloat(valorExtra) || 0);
-      const { custoGel, custoExtraEsmalte } = calculateLucro();
+      const { lucro, custoMaterial: totalCustoFinal, custoGel, custoExtraEsmalte } = calculateLucro();
       const materialCostToSave = custoGel + custoExtraEsmalte;
 
       await supabase
@@ -202,8 +202,10 @@ export function Atendimento() {
           cliente_nome: clienteNome,
           servico: servico,
           tecnica: tecnica,
+          tipo_servico: tecnica,
           valor_cobrado: totalFinal,
           custo_material: materialCostToSave,
+          lucro_liquido: lucro,
           gel_usado: gel.nome || 'N/A',
           quantidade_gasta: qtdGasta,
           data: new Date().toISOString()
