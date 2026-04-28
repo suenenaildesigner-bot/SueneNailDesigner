@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Settings as SettingsIcon, ChevronLeft, DollarSign, PenTool, Plus } from 'lucide-react';
+import { Save, Settings as SettingsIcon, ChevronLeft, DollarSign, PenTool, BookOpen } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { motion } from 'motion/react';
+import { GuiaGestao } from './GuiaGestao';
 
 interface Servico {
   id: string;
@@ -14,10 +15,15 @@ export function Settings({ onBack }: { onBack: () => void }) {
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
 
   useEffect(() => {
     fetchServicos();
   }, []);
+
+  if (showGuide) {
+    return <GuiaGestao onBack={() => setShowGuide(false)} />;
+  }
 
   const fetchServicos = async () => {
     try {
@@ -90,6 +96,22 @@ export function Settings({ onBack }: { onBack: () => void }) {
             Ajuste os valores de venda e o consumo médio de material para cada técnica oferecida.
           </p>
         </div>
+
+        <button 
+          onClick={() => setShowGuide(true)}
+          className="glass-card p-4 flex items-center justify-between border-l-[6px] border-l-blue-400 group active:scale-[0.98] transition-all w-full text-left"
+        >
+          <div className="flex items-center gap-3">
+             <div className="p-3 bg-blue-50 rounded-2xl text-blue-500">
+               <BookOpen size={20} />
+             </div>
+             <div>
+               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dúvidas de Gestão?</p>
+               <h4 className="font-bold text-slate-800 uppercase text-xs tracking-widest pr-4">Ver Manual de Lucratividade</h4>
+             </div>
+          </div>
+          <ChevronLeft size={20} className="text-slate-300 rotate-180 group-hover:translate-x-1 transition-transform" />
+        </button>
 
         <div className="space-y-4">
           {loading ? (

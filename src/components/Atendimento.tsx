@@ -82,6 +82,7 @@ export function Atendimento() {
     const valor = (parseFloat(valorCobrado) || 0) + (parseFloat(valorExtra) || 0);
     const qtdGasta = parseFloat(gramatura) || 0;
     
+    // Encontrar o gel selecionado para pegar o custo por grama
     const gel = pots.find(p => p.id === gelSelecionado);
     let custoGel = 0;
     if (gel && qtdGasta > 0) {
@@ -89,14 +90,15 @@ export function Atendimento() {
     }
     
     const custoExtraEsmalte = tecnica === 'Esmaltação em Gel' ? 2.00 : 0;
-    const lucroTotal = valor - custoGel - CUSTO_DESCARTAVEL - custoExtraEsmalte;
+    const materialCostTotal = custoGel + custoExtraEsmalte + CUSTO_DESCARTAVEL;
+    const lucroFinal = valor - materialCostTotal;
     
     return {
       valor,
       custoGel,
       custoExtraEsmalte,
-      custoMaterial: custoGel + custoExtraEsmalte + CUSTO_DESCARTAVEL,
-      lucro: Math.max(0, lucroTotal)
+      custoMaterial: materialCostTotal,
+      lucro: Math.max(0, lucroFinal)
     };
   };
 

@@ -34,8 +34,21 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, itemText }: ConfirmMo
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-pink-200/40 rounded-full blur-3xl pointer-events-none" />
             
             <div className="flex flex-col items-center text-center gap-6">
-              <div className="w-20 h-20 bg-rose-50 rounded-3xl flex items-center justify-center text-rose-500 shadow-inner">
-                <AlertCircle size={40} />
+              <div className="w-24 h-24 bg-pink-50 rounded-full flex items-center justify-center text-pink-500 shadow-inner overflow-hidden relative">
+                <img 
+                  src="/logo2.png" 
+                  alt="Rose Logo" 
+                  className="w-14 h-14 object-contain opacity-80"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const parent = e.currentTarget.parentElement;
+                    if (parent) {
+                      const icon = document.createElement('div');
+                      icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-circle text-pink-500"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+                      parent.appendChild(icon);
+                    }
+                  }}
+                />
               </div>
               
               <div className="space-y-2">
@@ -48,9 +61,9 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, itemText }: ConfirmMo
               <div className="flex flex-col w-full gap-3 mt-4">
                 <button
                   onClick={onConfirm}
-                  className="w-full py-4.5 bg-[#f21b7f] text-white font-bold rounded-2xl shadow-lg shadow-pink-200 active:scale-95 transition-all text-lg uppercase tracking-wider"
+                  className="w-full py-5 bg-[#f21b7f] text-white font-black rounded-2xl shadow-lg shadow-pink-200 active:scale-95 transition-all text-sm uppercase tracking-[0.2em]"
                 >
-                  EXCLUIR
+                  CONFIRMAR EXCLUSÃO
                 </button>
                 <button
                   onClick={onClose}

@@ -4,19 +4,20 @@ import { Estoque } from './Estoque';
 import { Atendimento } from './Atendimento';
 import { Relatorio } from './Relatorio';
 import { Settings } from './Settings';
-import { CalendarDays, Package, Scissors, BarChart3, LogOut, RefreshCw, Settings as SettingsIcon } from 'lucide-react';
+import { GuiaGestao } from './GuiaGestao';
+import { CalendarDays, Package, Scissors, BarChart3, LogOut, RefreshCw, Settings as SettingsIcon, Star } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-type TabType = 'agenda' | 'estoque' | 'atendimento' | 'relatorio' | 'settings';
+type TabType = 'agenda' | 'estoque' | 'atendimento' | 'relatorio' | 'settings' | 'guia';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
 export function Dashboard({ onLogout }: DashboardProps) {
-  const [activeTab, setActiveTab] = useState<TabType>('agenda');
+  const [activeTab, setActiveTab ] = useState<TabType>('agenda');
   const [lastTab, setLastTab] = useState<TabType>('agenda');
   const [currentDate, setCurrentDate] = useState('');
   
@@ -73,6 +74,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
     { id: 'agenda', label: 'Agenda', icon: CalendarDays },
     { id: 'estoque', label: 'Estoque', icon: Package },
     { id: 'atendimento', label: 'Atendimento', icon: Scissors },
+    { id: 'guia', label: 'Guia', icon: Star },
     { id: 'relatorio', label: 'Relatórios', icon: BarChart3 },
   ] as const;
 
@@ -131,6 +133,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
           {activeTab === 'atendimento' && <Atendimento />}
           {activeTab === 'relatorio' && <Relatorio />}
           {activeTab === 'settings' && <Settings onBack={() => setActiveTab(lastTab)} />}
+          {activeTab === 'guia' && <GuiaGestao onBack={() => setActiveTab(lastTab)} />}
         </div>
       </main>
 
