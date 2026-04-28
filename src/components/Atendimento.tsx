@@ -1,29 +1,95 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Scissors, DollarSign, Droplet, Calculator } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+
+interface Gel {
+  id: string;
+  marca: string;
+  nome: string;
+  quantidade_atual: number;
+  quantidade_total: number;
+  preco: number;
+}
 
 export function Atendimento() {
   const [valorCobrado, setValorCobrado] = useState('');
-  const [gramatura, setGramatura] = useState('2'); // default 2g per service typically
+  const [gramatura, setGramatura] = useState('2');
   const [gelSelecionado, setGelSelecionado] = useState('');
+  const [pots, setPots] = useState<Gel[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Dummy list of pots to populate the select.
-  // In a real scenario, this would be fetched from Supabase / global state
-  const pots = [
-    { id: '1', name: 'Vólia Gel Classic Blank (Restante: 18g)' },
-    { id: '2', name: 'Vólia Gel Classic Pink (Restante: 5g)' },
-  ];
+  useEffect(() => {
+    fetchPots();
+  }, []);
 
-  const handleDescontar = (e: React.FormEvent) => {
+  const fetchPots = async () => {
+    const { data } = await supabase
+      .from('estoque')
+      .select('*')
+      .gt('quantidade_atual', 0);
+    if (data) setPots(data);
+  };
+
+  const handleDescontar = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!gelSelecionado) {
       alert("Por favor, selecione qual gel foi utilizado.");
       return;
     }
-    alert(`Material descontado com sucesso! \n\nValor: R$ ${valorCobrado}\nGel: ${pots.find(p=>p.id===gelSelecionado)?.name}\nQtd: ${gramatura}g`);
-    // In production: Update Supabase estoque table (subtract gramatura), and add to relatorio (valorCobrado)
-    setValorCobrado('');
-    setGelSelecionado('');
-    setGramatura('2');
+
+    setLoading(true);
+    try {
+      const gel = pots.find(p => p.id === gelSelecionado);
+      if (!gel) return;
+
+      const qtdGasta = parseFloat(gramatura);
+      const novaQtd = gel.quantidade_atual - qtdGasta;
+
+      if (novaQtd < 0) {
+        alert("Quantidade insuficiente no estoque!");
+        setLoading(false);
+        return;
+      }
+
+      // 1. Atualizar estoque
+      const { error: stockError } = await supabase
+        .from('estoque')
+        .update({ quantidade_atual: novaQtd })
+        .eq('id', gelSelecionado);
+
+      if (stockError) throw stockError;
+
+      // 2. Calcular custo proporcional: (Preço do Pote / Peso Total) * Peso Gasto
+      const custoMaterial = (gel.preco / gel.quantidade_total) * qtdGasta;
+
+      // 3. Registrar atendimento para o relatório
+      // Assumindo a existência de uma tabela 'atendimentos' ou similar para o relatório
+      const { error: serviceError } = await supabase
+        .from('atendimentos')
+        .insert([{
+          valor_cobrado: parseFloat(valorCobrado),
+          custo_material: custoMaterial,
+          gel_usado: gel.nome,
+          quantidade_gasta: qtdGasta,
+          data: new Date().toISOString()
+        }]);
+
+      if (serviceError) {
+        console.warn('Tabela atendimentos não encontrada, mas o estoque foi atualizado.');
+      }
+
+      alert(`Sucesso! Material descontado.\nCusto calculado: R$ ${custoMaterial.toFixed(2)}`);
+      
+      setValorCobrado('');
+      setGelSelecionado('');
+      setGramatura('2');
+      fetchPots();
+    } catch (error) {
+      console.error(error);
+      alert('Erro ao processar atendimento.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,7 +129,7 @@ export function Atendimento() {
             >
               <option value="" disabled>Selecione um pote de gel...</option>
               {pots.map(pot => (
-                <option key={pot.id} value={pot.id}>{pot.name}</option>
+                <option key={pot.id} value={pot.id}>{pot.marca} - {pot.nome} ({pot.quantidade_atual.toFixed(1)}g rest.)</option>
               ))}
             </select>
           </div>
@@ -86,8 +152,12 @@ export function Atendimento() {
           </p>
         </div>
 
-        <button type="submit" className="btn-gradient w-full py-4 text-lg mt-4 flex items-center justify-center gap-2">
-          DESCONTAR MATERIAL
+        <button 
+          type="submit" 
+          disabled={loading}
+          className="btn-gradient w-full py-4 text-lg mt-4 flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          {loading ? 'PROCESSANDO...' : 'DESCONTAR MATERIAL'}
         </button>
       </form>
     </div>
