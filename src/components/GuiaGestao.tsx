@@ -43,28 +43,28 @@ export function GuiaGestao({ onBack }: { onBack: () => void }) {
         <h2 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Gestão de Elite</h2>
       </header>
 
-      <main className="p-6 space-y-6">
+      <main className="p-6 space-y-8">
         {/* Banner de Logo Luxo */}
-        <div className="flex flex-col items-center justify-center pt-8 pb-12 text-center text-slate-800">
+        <div className="flex flex-col items-center justify-center pt-10 pb-16 text-center text-slate-800">
           <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative mb-8"
+            className="relative mb-10 w-full flex justify-center"
           >
             {/* Glow Rosa de Fundo mais intenso */}
-            <div className="absolute inset-x-[-50px] inset-y-[-20px] bg-pink-400/30 blur-[80px] rounded-full scale-110 -z-10" />
+            <div className="absolute inset-0 bg-pink-400/20 blur-[100px] rounded-full -z-10" />
             
             <img 
               src="/logo2.png" 
               alt="Suene Nail Designer" 
-              className="w-[220px] h-auto object-contain drop-shadow-[0_25px_40px_rgba(242,27,127,0.4)]"
+              className="w-[240px] max-w-[70%] h-auto object-contain drop-shadow-[0_30px_50px_rgba(242,27,127,0.4)] transition-transform hover:scale-105 duration-700"
             />
           </motion.div>
           
-          <h1 className="text-4xl font-black uppercase tracking-tighter leading-none" style={{ fontFamily: "'Dancing Script', cursive" }}>
+          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none" style={{ fontFamily: "'Dancing Script', cursive" }}>
             Guia da Empreendedora
           </h1>
-          <p className="text-[10px] font-black text-pink-500 uppercase tracking-[0.4em] mt-4 opacity-70">
+          <p className="text-[11px] font-black text-pink-500 uppercase tracking-[0.5em] mt-6 opacity-80">
             Sua Empresa, Seus Lucros, Seu Império
           </p>
         </div>

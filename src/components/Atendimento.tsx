@@ -318,30 +318,36 @@ export function Atendimento() {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Valor Base (R$)</label>
-            <input 
-              required
-              type="number" 
-              inputMode="decimal"
-              step="0.01"
-              placeholder="0,00" 
-              className="input-glass w-full px-4 py-4 text-lg font-black text-slate-800"
-              value={valorCobrado}
-              onChange={e => setValorCobrado(e.target.value)}
-            />
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Preço Base</label>
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm pointer-events-none group-focus-within:text-pink-500">R$</span>
+              <input 
+                required
+                type="number" 
+                inputMode="decimal"
+                step="0.01"
+                placeholder="0,00" 
+                className="input-glass w-full pl-10 pr-4 py-4 text-base font-black text-slate-800"
+                value={valorCobrado}
+                onChange={e => setValorCobrado(e.target.value.replace(',', '.'))}
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Extras / Arte (R$)</label>
-            <input 
-              type="number" 
-              inputMode="decimal"
-              step="0.01"
-              placeholder="+ 0,00" 
-              className="input-glass w-full px-4 py-4 text-lg font-black text-pink-600"
-              value={valorExtra}
-              onChange={e => setValorExtra(e.target.value)}
-            />
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Arte / Extras</label>
+            <div className="relative group">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-pink-300 font-bold text-sm pointer-events-none group-focus-within:text-pink-500">R$</span>
+              <input 
+                type="number" 
+                inputMode="decimal"
+                step="0.01"
+                placeholder="+ 0,00" 
+                className="input-glass w-full pl-10 pr-4 py-4 text-base font-black text-pink-600"
+                value={valorExtra}
+                onChange={e => setValorExtra(e.target.value.replace(',', '.'))}
+              />
+            </div>
           </div>
         </div>
 

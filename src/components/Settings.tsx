@@ -120,7 +120,7 @@ export function Settings({ onBack }: { onBack: () => void }) {
           <ChevronLeft size={20} className="text-slate-300 rotate-180 group-hover:translate-x-1 transition-transform" />
         </button>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {loading ? (
             <div className="p-20 flex justify-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
@@ -131,38 +131,47 @@ export function Settings({ onBack }: { onBack: () => void }) {
                 key={servico.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="glass-card p-6 space-y-4"
+                className="glass-card p-8 border-l-[8px] border-l-pink-500 bg-white/80 shadow-md mb-6"
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center text-pink-500">
-                    <PenTool size={18} />
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="p-4 bg-pink-50 rounded-2xl text-pink-500 shadow-inner">
+                    <PenTool size={20} />
                   </div>
-                  <h4 className="font-bold text-slate-800 uppercase text-xs tracking-widest">{servico.nome_servico}</h4>
+                  <h4 className="font-black text-slate-800 uppercase text-[13px] tracking-[0.25em]">{servico.nome_servico}</h4>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Preço Sugerido</label>
-                    <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-pink-300" size={14} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-black text-pink-400 uppercase tracking-widest ml-1 opacity-80">Preço de Venda</label>
+                    <div className="relative group">
+                      <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-black text-sm pointer-events-none group-focus-within:text-pink-500 transition-colors">
+                        R$
+                      </div>
                       <input 
                         type="number"
+                        step="0.01"
                         inputMode="decimal"
-                        className="input-glass w-full pl-8 py-3 text-sm font-bold text-slate-800"
+                        className="input-glass w-full pl-14 py-4 text-base font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none"
                         value={servico.valor_sugerido}
-                        onChange={e => handleUpdate(servico.id, 'valor_sugerido', parseFloat(e.target.value))}
+                        onChange={e => handleUpdate(servico.id, 'valor_sugerido', parseFloat(e.target.value) || 0)}
                       />
                     </div>
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Gasto Médio (g)</label>
-                    <input 
-                      type="number"
-                      inputMode="decimal"
-                      className="input-glass w-full py-3 text-sm font-bold text-slate-800"
-                      value={servico.gasto_medio}
-                      onChange={e => handleUpdate(servico.id, 'gasto_medio', parseFloat(e.target.value))}
-                    />
+                  
+                  <div className="space-y-3">
+                    <label className="text-[11px] font-black text-pink-400 uppercase tracking-widest ml-1 opacity-80">Consumo de Gel</label>
+                    <div className="relative group">
+                      <input 
+                        type="number"
+                        step="0.1"
+                        inputMode="decimal"
+                        className="input-glass w-full px-6 py-4 text-base font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none"
+                        placeholder="Ex: 3.5"
+                        value={servico.gasto_medio}
+                        onChange={e => handleUpdate(servico.id, 'gasto_medio', parseFloat(e.target.value) || 0)}
+                      />
+                      <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 uppercase tracking-tighter">Gramas</span>
+                    </div>
                   </div>
                 </div>
               </motion.div>
