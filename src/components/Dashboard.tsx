@@ -3,12 +3,13 @@ import { Agenda } from './Agenda';
 import { Estoque } from './Estoque';
 import { Atendimento } from './Atendimento';
 import { Relatorio } from './Relatorio';
-import { CalendarDays, Package, Scissors, BarChart3, LogOut, RefreshCw } from 'lucide-react';
+import { Settings } from './Settings';
+import { CalendarDays, Package, Scissors, BarChart3, LogOut, RefreshCw, Settings as SettingsIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-type TabType = 'agenda' | 'estoque' | 'atendimento' | 'relatorio';
+type TabType = 'agenda' | 'estoque' | 'atendimento' | 'relatorio' | 'settings';
 
 interface DashboardProps {
   onLogout: () => void;
@@ -16,6 +17,7 @@ interface DashboardProps {
 
 export function Dashboard({ onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('agenda');
+  const [lastTab, setLastTab] = useState<TabType>('agenda');
   const [currentDate, setCurrentDate] = useState('');
   
   // Pull to refresh state
@@ -99,12 +101,24 @@ export function Dashboard({ onLogout }: DashboardProps) {
           <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest mb-1">{currentDate}</p>
           <h1 className="text-2xl font-bold text-slate-800" style={{ fontFamily: "'Dancing Script', cursive" }}>Suene Designer</h1>
         </div>
-        <button 
-          onClick={handleLogout} 
-          className="w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl flex items-center justify-center text-rose-500 active:scale-90 transition-transform shadow-sm border border-white/40"
-        >
-          <LogOut size={20} />
-        </button>
+        <div className="flex gap-2">
+          <button 
+            onClick={() => { setLastTab(activeTab); setActiveTab('settings'); }}
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all shadow-sm border ${
+              activeTab === 'settings' 
+                ? 'bg-[#f21b7f] text-white border-pink-400' 
+                : 'bg-white/80 text-slate-400 border-white/40'
+            }`}
+          >
+            <SettingsIcon size={20} />
+          </button>
+          <button 
+            onClick={handleLogout} 
+            className="w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl flex items-center justify-center text-rose-500 active:scale-90 transition-transform shadow-sm border border-white/40"
+          >
+            <LogOut size={20} />
+          </button>
+        </div>
       </header>
 
       <main 
@@ -116,6 +130,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
           {activeTab === 'estoque' && <Estoque />}
           {activeTab === 'atendimento' && <Atendimento />}
           {activeTab === 'relatorio' && <Relatorio />}
+          {activeTab === 'settings' && <Settings onBack={() => setActiveTab(lastTab)} />}
         </div>
       </main>
 

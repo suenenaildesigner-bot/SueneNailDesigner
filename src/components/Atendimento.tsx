@@ -19,6 +19,13 @@ interface SugestaoAgenda {
   data_hora: string;
 }
 
+interface Servico {
+  id: string;
+  nome: string;
+  preco_sugerido: number;
+  gasto_estimado: number;
+}
+
 export function Atendimento() {
   const [clienteNome, setClienteNome] = useState('');
   const [servico, setServico] = useState('');
@@ -28,6 +35,7 @@ export function Atendimento() {
   const [gramatura, setGramatura] = useState('');
   const [gelSelecionado, setGelSelecionado] = useState('');
   const [pots, setPots] = useState<Gel[]>([]);
+  const [servicos, setServicos] = useState<Servico[]>([]);
   const [loading, setLoading] = useState(false);
   const [sucesso, setSucesso] = useState(false);
   const [agendamentoSugerido, setAgendamentoSugerido] = useState<SugestaoAgenda | null>(null);
@@ -37,24 +45,36 @@ export function Atendimento() {
   useEffect(() => {
     fetchPots();
     fetchUpcomingAppointment();
+    fetchServicos();
   }, []);
+
+  const fetchServicos = async () => {
+    try {
+      const { data } = await supabase.from('servicos').select('*').order('nome');
+      if (data && data.length > 0) {
+        setServicos(data);
+      } else {
+        // Fallback hardcoded services
+        setServicos([
+          { id: '1', nome: 'Molde F1', preco_sugerido: 180, gasto_estimado: 3.5 },
+          { id: '2', nome: 'Banho de Gel', preco_sugerido: 100, gasto_estimado: 1.5 },
+          { id: '3', nome: 'Manutenção F1', preco_sugerido: 130, gasto_estimado: 2.5 },
+          { id: '4', nome: 'Esmaltação em Gel', preco_sugerido: 70, gasto_estimado: 0 }
+        ]);
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    }
+  };
 
   const handleTecnicaChange = (val: string) => {
     setTecnica(val);
     setServico(val);
     
-    if (val === 'Molde F1') {
-      setGramatura('3.5');
-      setValorCobrado('180');
-    } else if (val === 'Banho de Gel') {
-      setGramatura('1.5');
-      setValorCobrado('100');
-    } else if (val === 'Manutenção F1') {
-      setGramatura('2.5');
-      setValorCobrado('130');
-    } else if (val === 'Esmaltação em Gel') {
-      setGramatura('0');
-      setValorCobrado('70');
+    const servicoSelecionado = servicos.find(s => s.nome === val);
+    if (servicoSelecionado) {
+      setGramatura(servicoSelecionado.gasto_estimado.toString());
+      setValorCobrado(servicoSelecionado.preco_sugerido.toString());
     }
   };
 
@@ -118,10 +138,22 @@ export function Atendimento() {
     if (agendamentoSugerido) {
       setClienteNome(agendamentoSugerido.cliente_nome);
       setServico(agendamentoSugerido.servico);
-      // Preços sugeridos baseados no serviço (exemplo)
-      if (agendamentoSugerido.servico.toLowerCase().includes('alongamento')) setValorCobrado('120');
-      else if (agendamentoSugerido.servico.toLowerCase().includes('manutenção')) setValorCobrado('90');
-      else setValorCobrado('80');
+      
+      // Tentar encontrar uma técnica que bata com o serviço agendado
+      const matchedServico = servicos.find(s => 
+        agendamentoSugerido.servico.toLowerCase().includes(s.nome.toLowerCase()) || 
+        s.nome.toLowerCase().includes(agendamentoSugerido.servico.toLowerCase())
+      );
+
+      if (matchedServico) {
+        setTecnica(matchedServico.nome);
+        setValorCobrado(matchedServico.preco_sugerido.toString());
+        setGramatura(matchedServico.gasto_estimado.toString());
+      } else {
+        if (agendamentoSugerido.servico.toLowerCase().includes('alongamento')) setValorCobrado('120');
+        else if (agendamentoSugerido.servico.toLowerCase().includes('manutenção')) setValorCobrado('90');
+        else setValorCobrado('80');
+      }
       
       setAgendamentoSugerido(null);
     }
@@ -254,10 +286,9 @@ export function Atendimento() {
               onChange={e => handleTecnicaChange(e.target.value)}
             >
               <option value="" disabled>Escolha a técnica...</option>
-              <option value="Molde F1">Molde F1</option>
-              <option value="Manutenção F1">Manutenção F1</option>
-              <option value="Banho de Gel">Banho de Gel</option>
-              <option value="Esmaltação em Gel">Esmaltação em Gel</option>
+              {servicos.map(s => (
+                <option key={s.id} value={s.nome}>{s.nome}</option>
+              ))}
             </select>
           </div>
 
@@ -280,6 +311,7 @@ export function Atendimento() {
             <input 
               required
               type="number" 
+              inputMode="decimal"
               step="0.01"
               placeholder="0,00" 
               className="input-glass w-full px-4 py-4 text-lg font-black text-slate-800"
@@ -292,6 +324,7 @@ export function Atendimento() {
             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Extras / Arte (R$)</label>
             <input 
               type="number" 
+              inputMode="decimal"
               step="0.01"
               placeholder="+ 0,00" 
               className="input-glass w-full px-4 py-4 text-lg font-black text-pink-600"
@@ -322,6 +355,7 @@ export function Atendimento() {
             <input 
               required
               type="number" 
+              inputMode="decimal"
               step="0.1"
               placeholder="Ex: 2.0"
               className="input-glass w-full px-5 py-4 text-slate-900 font-black text-xl"
@@ -380,8 +414,22 @@ export function Atendimento() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               className="flex flex-col items-center gap-6 p-12 bg-white rounded-[60px] border-4 border-pink-100 shadow-[0_40px_100px_rgba(242,27,127,0.15)]"
             >
-              <div className="w-24 h-24 bg-pink-50 rounded-full flex items-center justify-center text-pink-500 shadow-inner">
-                <CheckCircle2 size={60} />
+              <div className="w-24 h-24 bg-pink-50 rounded-full flex items-center justify-center text-pink-500 shadow-inner relative overflow-hidden">
+                <img 
+                  src="/logo2.png" 
+                  alt="Rose Logo" 
+                  className="w-16 h-16 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    // Fallback to Icon
+                    const parent = e.currentTarget.parentElement;
+                    if (parent) {
+                      const icon = document.createElement('div');
+                      icon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle-2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>';
+                      parent.appendChild(icon);
+                    }
+                  }}
+                />
               </div>
               <div className="text-center">
                 <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tighter mb-1">Finalizado</h3>
