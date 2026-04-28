@@ -34,13 +34,14 @@ export function Settings({ onBack }: { onBack: () => void }) {
         .order('servico');
 
       if (error || !data || data.length === 0) {
-         // Fallback to initial values if table doesn't exist yet or is empty
+         // Official Elite Service List
          const initialServicos = [
-           { id: '1', nome_servico: 'Molde F1', valor_sugerido: 180, gasto_medio: 3.5 },
-           { id: '2', nome_servico: 'Banho de Gel', valor_sugerido: 100, gasto_medio: 1.5 },
-           { id: '3', nome_servico: 'Manutenção F1', valor_sugerido: 130, gasto_medio: 2.5 },
-           { id: '4', nome_servico: 'Esmaltação em Gel', valor_sugerido: 70, gasto_medio: 0 },
-           { id: '5', nome_servico: 'Unha Simples', valor_sugerido: 50, gasto_medio: 0.5 }
+           { id: '1', nome_servico: 'Alongamento fio a fio', valor_sugerido: 150, gasto_medio: 3.0 },
+           { id: '2', nome_servico: 'Colocação do molde F1', valor_sugerido: 180, gasto_medio: 3.5 },
+           { id: '3', nome_servico: 'Manutenção do molde F1', valor_sugerido: 130, gasto_medio: 2.5 },
+           { id: '4', nome_servico: 'Esmaltação em Gel', valor_sugerido: 70, gasto_medio: 0.5 },
+           { id: '5', nome_servico: 'Banho de Gel', valor_sugerido: 100, gasto_medio: 1.5 },
+           { id: '6', nome_servico: 'Unha (Simples)', valor_sugerido: 50, gasto_medio: 0.2 }
          ];
          setServicos(initialServicos);
       } else {
@@ -126,18 +127,18 @@ export function Settings({ onBack }: { onBack: () => void }) {
 
         <button 
           onClick={() => setShowGuide(true)}
-          className="glass-card p-4 flex items-center justify-between border-l-[6px] border-l-blue-400 group active:scale-[0.98] transition-all w-full text-left"
+          className="w-full glass-card p-6 flex items-center justify-between group active:scale-[0.98] transition-all border-l-[8px] border-l-[#f21b7f]"
         >
-          <div className="flex items-center gap-3">
-             <div className="p-3 bg-blue-50 rounded-2xl text-blue-500">
-               <BookOpen size={20} />
-             </div>
-             <div>
-               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dúvidas de Gestão?</p>
-               <h4 className="font-bold text-slate-800 uppercase text-xs tracking-widest pr-4">Ver Manual de Lucratividade</h4>
-             </div>
+          <div className="flex items-center gap-5">
+            <div className="p-4 bg-pink-50 rounded-2xl text-[#f21b7f]">
+              <BookOpen size={24} />
+            </div>
+            <div className="text-left">
+              <h4 className="font-black text-slate-800 text-[12px] uppercase tracking-widest">Manual de Gestão</h4>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Protocolos de Elite Suene Nail</p>
+            </div>
           </div>
-          <ChevronLeft size={20} className="text-slate-300 rotate-180 group-hover:translate-x-1 transition-transform" />
+          <ChevronLeft size={22} className="text-slate-300 rotate-180 group-hover:translate-x-1 transition-transform" />
         </button>
 
         <div className="space-y-8">
@@ -165,8 +166,7 @@ export function Settings({ onBack }: { onBack: () => void }) {
                     <label className="text-[14px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Preço do Serviço</label>
                     <div className="relative group">
                       <input 
-                        type="number"
-                        step="0.01"
+                        type="text"
                         inputMode="decimal"
                         className="input-glass w-full px-10 py-8 text-2xl font-black text-slate-700 hover:border-pink-200 focus:border-[#f21b7f] transition-all outline-none rounded-[32px] bg-slate-50/50"
                         placeholder="0.00"
@@ -180,8 +180,7 @@ export function Settings({ onBack }: { onBack: () => void }) {
                     <label className="text-[14px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Consumo de Gel</label>
                     <div className="relative group">
                       <input 
-                        type="number"
-                        step="0.1"
+                        type="text"
                         inputMode="decimal"
                         className="input-glass w-full px-10 py-8 text-2xl font-black text-slate-700 hover:border-pink-200 focus:border-[#f21b7f] transition-all outline-none rounded-[32px] bg-slate-50/50"
                         placeholder="Ex: 3.5"

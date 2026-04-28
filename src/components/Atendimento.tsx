@@ -63,10 +63,12 @@ export function Atendimento() {
       } else {
         // Fallback hardcoded services
         setServicos([
-          { id: '1', nome: 'Molde F1', preco_sugerido: 180, gasto_estimado: 3.5 },
-          { id: '2', nome: 'Banho de Gel', preco_sugerido: 100, gasto_estimado: 1.5 },
-          { id: '3', nome: 'Manutenção F1', preco_sugerido: 130, gasto_estimado: 2.5 },
-          { id: '4', nome: 'Esmaltação em Gel', preco_sugerido: 70, gasto_estimado: 0 }
+          { id: '1', nome: 'Alongamento fio a fio', preco_sugerido: 150, gasto_estimado: 3.0 },
+          { id: '2', nome: 'Colocação do molde F1', preco_sugerido: 180, gasto_estimado: 3.5 },
+          { id: '3', nome: 'Manutenção do molde F1', preco_sugerido: 130, gasto_estimado: 2.5 },
+          { id: '4', nome: 'Esmaltação em Gel', preco_sugerido: 70, gasto_estimado: 0.5 },
+          { id: '5', nome: 'Banho de Gel', preco_sugerido: 100, gasto_estimado: 1.5 },
+          { id: '6', nome: 'Unha (Simples)', preco_sugerido: 50, gasto_estimado: 0.2 }
         ]);
       }
     } catch (error) {
@@ -322,11 +324,10 @@ export function Atendimento() {
             <div className="relative group">
               <input 
                 required
-                type="number" 
+                type="text" 
                 inputMode="decimal"
-                step="0.01"
                 placeholder="0.00" 
-                className="input-glass w-full px-10 py-8 text-xl font-black text-slate-800 rounded-[30px]"
+                className="input-glass w-full px-10 py-8 text-2xl font-black text-slate-800 rounded-[30px]"
                 value={valorCobrado}
                 onChange={e => setValorCobrado(e.target.value.replace(',', '.'))}
               />
@@ -337,11 +338,10 @@ export function Atendimento() {
             <label className="text-[12px] font-black text-pink-500 uppercase tracking-widest ml-1">Arte / Extras</label>
             <div className="relative group">
               <input 
-                type="number" 
+                type="text" 
                 inputMode="decimal"
-                step="0.01"
                 placeholder="+ 0.00" 
-                className="input-glass w-full px-10 py-8 text-xl font-black text-pink-600 rounded-[30px]"
+                className="input-glass w-full px-10 py-8 text-2xl font-black text-pink-600 rounded-[30px]"
                 value={valorExtra}
                 onChange={e => setValorExtra(e.target.value.replace(',', '.'))}
               />

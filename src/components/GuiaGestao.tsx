@@ -45,23 +45,26 @@ export function GuiaGestao({ onBack }: { onBack: () => void }) {
 
       <main className="p-8 space-y-12">
         {/* Banner de Logo Luxo - Sem Molduras */}
-        <div className="flex flex-col items-center justify-center pt-12 pb-20 text-center text-slate-800">
+        <div className="flex flex-col items-center justify-center pt-16 pb-24 text-center text-slate-800">
           <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
+            initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="mb-12 w-full flex justify-center"
+            className="mb-14 w-full flex justify-center relative"
           >
+            {/* Background Glow for high impact */}
+            <div className="absolute inset-0 bg-[#f21b7f]/10 blur-[120px] rounded-full -z-10" />
+            
             <img 
               src="/logo2.png" 
               alt="Suene Nail Designer" 
-              className="w-[260px] h-auto object-contain drop-shadow-[0_20px_50px_rgba(242,27,127,0.3)] transition-transform hover:scale-105 duration-700"
+              className="w-[260px] h-auto object-contain drop-shadow-[0_15px_45px_rgba(242,27,127,0.4)] transition-transform hover:scale-105 duration-700"
             />
           </motion.div>
           
-          <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-none" style={{ fontFamily: "'Dancing Script', cursive" }}>
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none text-slate-900" style={{ fontFamily: "'Dancing Script', cursive" }}>
             Guia da Empreendedora
           </h1>
-          <p className="text-[11px] font-black text-pink-500 uppercase tracking-[0.5em] mt-6 opacity-80">
+          <p className="text-[12px] font-black text-[#f21b7f] uppercase tracking-[0.55em] mt-8 opacity-90 drop-shadow-sm">
             Sua Empresa, Seus Lucros, Seu Império
           </p>
         </div>
