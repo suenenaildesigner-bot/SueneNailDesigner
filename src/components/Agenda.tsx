@@ -49,7 +49,7 @@ export function Agenda() {
       const mappedData = (data || []).map((app: any) => ({
         id: app.id,
         name: app.cliente_nome,
-        whatsapp: app.whatsapp,
+        whatsapp: app.cliente_whatsapp,
         date: app.data_hora,
         service: app.servico,
         status: app.status
@@ -70,7 +70,7 @@ export function Agenda() {
     // Preparar dados para o formato do banco
     const dbPayload = {
       cliente_nome: formData.name,
-      whatsapp: formData.whatsapp,
+      cliente_whatsapp: formData.whatsapp,
       data_hora: formData.date,
       servico: formData.service,
     };
