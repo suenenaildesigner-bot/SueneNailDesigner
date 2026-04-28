@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Phone, Clock, FilePlus2, Sparkles, CheckCircle2, Pencil, Trash2, X } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { ConfirmModal } from './ConfirmModal';
+import { WhatsAppModal } from './WhatsAppModal';
 
 interface Appointment {
   id: string;
@@ -19,6 +20,8 @@ export function Agenda() {
   const [loading, setLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [whatsappModalOpen, setWhatsappModalOpen] = useState(false);
+  const [whatsappData, setWhatsappData] = useState<{name: string, whatsapp: string, service: string, date: string} | null>(null);
   const [itemToDelete, setItemToDelete] = useState<{id: string, name: string} | null>(null);
 
   useEffect(() => {
@@ -110,9 +113,14 @@ export function Agenda() {
         if (error) throw error;
       }
       
+      const lastSavedData = { ...formData };
       setFormData({ name: '', whatsapp: '', date: '', service: '' });
       setEditingId(null);
       await fetchAppointments();
+
+      // Abrir modal de WhatsApp para confirmação
+      setWhatsappData(lastSavedData);
+      setWhatsappModalOpen(true);
     } catch (error: any) {
       console.error('ERRO DETALHADO SUPABASE:', error);
       alert(`Erro ao salvar: ${error.message || 'Verifique o console'}`);
@@ -323,6 +331,12 @@ export function Agenda() {
         onClose={() => setModalOpen(false)} 
         onConfirm={confirmDelete} 
         itemText={itemToDelete?.name} 
+      />
+
+      <WhatsAppModal
+        isOpen={whatsappModalOpen}
+        onClose={() => setWhatsappModalOpen(false)}
+        data={whatsappData}
       />
 
     </div>
