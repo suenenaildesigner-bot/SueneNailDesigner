@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase, checkSupabase } from '../lib/supabase';
-import { Mail, Lock, Sparkles } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
 interface LoginProps {
   onLogin: () => void;
@@ -9,13 +9,13 @@ interface LoginProps {
 export function Login({ onLogin }: LoginProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!checkSupabase()) {
-      // Allow bypass for demo / preview if no Supabase configured
       onLogin();
       return;
     }
@@ -23,73 +23,93 @@ export function Login({ onLogin }: LoginProps) {
     setLoading(true);
     setError('');
     
-    // In actual implementation with Supabase:
-    const { error } = await supabase!.auth.signInWithPassword({
+    const { error: authError } = await supabase!.auth.signInWithPassword({
       email,
       password,
     });
 
     setLoading(false);
 
-    if (error) {
-      setError(error.message);
+    if (authError) {
+      setError(authError.message);
     } else {
-      onLogin(); // Proceed to dashboard
+      onLogin();
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-[90%] max-w-[360px] bg-white/20 backdrop-blur-xl px-8 pt-10 pb-12 rounded-[32px] flex flex-col items-center shadow-[0_8px_32px_rgba(255,20,147,0.2)] border border-white/50 text-center">
+    <div className="flex min-h-screen items-center justify-center p-6 bg-transparent">
+      <div className="w-full max-w-[380px] bg-white/75 backdrop-blur-[20px] px-8 py-10 rounded-[40px] flex flex-col items-center text-center shadow-[0_12px_40px_rgba(0,0,0,0.1)] border border-white/40 animate-in fade-in zoom-in duration-500">
         
-        <h1 className="text-[38px] font-bold text-[#e81977] mb-10 leading-tight" style={{ fontFamily: "'Dancing Script', cursive" }}>SueneNailDesigner</h1>
+        <div className="w-40 h-40 flex items-center justify-center mb-4">
+          <img 
+            src="/logo2.png" 
+            alt="Suene Nail Designer Logo" 
+            className="w-full h-full object-contain filter drop-shadow-sm" 
+            onError={(e) => (e.currentTarget.src = 'https://api.iconify.design/lucide:sparkles.svg?color=%23f21b7f')}
+          />
+        </div>
 
-        <form onSubmit={handleLogin} className="w-full space-y-5">
-          {error && <div className="p-3 bg-red-100/80 backdrop-blur-md text-red-600 border border-red-200 rounded-xl text-sm">{error}</div>}
-          
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Mail className="h-[20px] w-[20px] text-[#e81977] stroke-[1.5]" />
+        <h1 className="text-[40px] font-bold text-[#e81977] leading-tight mb-1" style={{ fontFamily: "'Dancing Script', cursive" }}>Suene Nail</h1>
+        <p className="text-slate-500 text-[10px] mb-8 font-black uppercase tracking-[0.4em] opacity-80">Designer</p>
+
+        <form onSubmit={handleLogin} className="w-full space-y-4">
+          {error && (
+            <div className="p-4 bg-red-50 text-red-600 border border-red-100 rounded-2xl text-xs font-semibold animate-in shake duration-300">
+              {error}
             </div>
+          )}
+          
+          <div className="relative group">
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#f21b7f] transition-colors" />
             <input
               type="email"
               required
-              className="w-full pl-12 pr-4 py-3.5 bg-white/40 backdrop-blur-md border border-white/60 rounded-[16px] text-gray-900 placeholder-gray-600 focus:outline-none focus:border-[#f21b7f] focus:bg-white/60 focus:ring-1 focus:ring-[#f21b7f] transition-all text-[15px] shadow-sm"
-              placeholder="Seu E-mail"
+              className="w-full pl-12 pr-4 py-4 bg-white/90 border border-pink-100 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#f21b7f] focus:ring-4 focus:ring-[#f21b7f]/10 transition-all text-[16px]"
+              placeholder="E-mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Lock className="h-[20px] w-[20px] text-[#e81977] stroke-[1.5]" />
-            </div>
+          <div className="relative group">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#f21b7f] transition-colors" />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               required
-              className="w-full pl-12 pr-4 py-3.5 bg-white/40 backdrop-blur-md border border-white/60 rounded-[16px] text-gray-900 placeholder-gray-600 focus:outline-none focus:border-[#f21b7f] focus:bg-white/60 focus:ring-1 focus:ring-[#f21b7f] transition-all text-[15px] shadow-sm"
-              placeholder="Sua Senha"
+              className="w-full pl-12 pr-12 py-4 bg-white/90 border border-pink-100 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#f21b7f] focus:ring-4 focus:ring-[#f21b7f]/10 transition-all text-[16px]"
+              placeholder="Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <button 
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-pink-500 transition-colors"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-[#fa559f] to-[#e81977] hover:opacity-90 text-white font-semibold uppercase tracking-wide rounded-[16px] shadow-lg hover:shadow-xl transition-all mt-4 text-[15px]"
+            className="w-full py-4 bg-[#f21b7f] hover:bg-[#d81570] text-white font-bold rounded-2xl shadow-lg shadow-pink-200 transition-all active:scale-[0.98] mt-2 text-[18px] disabled:opacity-70"
           >
-            {loading ? 'Entrando...' : 'Acessar Sistema'}
+            {loading ? 'Acessando...' : 'Acessar Painel'}
           </button>
         </form>
 
         {!checkSupabase() && (
-           <p className="mt-8 text-xs text-gray-600 text-center max-w-xs font-medium">
-             * Supabase não configurado. O acesso está liberado sem banco de dados. Adicione suas credenciais no painel de Secrets.
+           <p className="mt-8 text-[11px] text-gray-400 uppercase tracking-widest font-bold">
+             * Modo Demonstração Ativado
            </p>
         )}
       </div>
+      
+      <p className="fixed bottom-8 text-[11px] text-white/80 uppercase tracking-widest font-bold">
+        V 2.1 • Sistema Verificado
+      </p>
     </div>
   );
 }

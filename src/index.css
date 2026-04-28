@@ -4,13 +4,13 @@
 @theme {
   --color-pink-hot: #FF1493;
   --color-pink-soft: #FFB6C1;
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-brand: "Dancing Script", cursive;
 }
 
 @layer base {
   body {
     background-color: #ff99cc;
-    /* Imagem de fundo movida para a pasta public */
     background-image: url('/Bclogin.jpg');
     background-size: cover;
     background-position: center;
@@ -18,7 +18,12 @@
     min-height: 100vh;
     color: #333333;
     font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
+  
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-thumb { background: #f21b7f; border-radius: 10px; }
+  ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
 }
 
 @layer utilities {

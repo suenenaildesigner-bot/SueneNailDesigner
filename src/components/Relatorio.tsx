@@ -54,18 +54,18 @@ export function Relatorio() {
             >
               <defs>
                 <linearGradient id="colorGanhos" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF1493" stopOpacity={0.4}/>
-                  <stop offset="95%" stopColor="#FF1493" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="#f21b7f" stopOpacity={0.6}/>
+                  <stop offset="95%" stopColor="#f21b7f" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#fecdd3" />
+              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#f21b7f', fontSize: 10, fontWeight: 'bold'}} dy={10} />
+              <YAxis axisLine={false} tickLine={false} hide />
               <Tooltip 
-                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
-                 itemStyle={{ color: '#FF1493', fontWeight: 'bold' }}
+                 contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 10px 25px rgba(242, 27, 127, 0.2)', backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
+                 itemStyle={{ color: '#f21b7f', fontWeight: 'bold' }}
               />
-              <Area type="monotone" dataKey="ganhos" stroke="#FF1493" strokeWidth={3} fillOpacity={1} fill="url(#colorGanhos)" />
+              <Area type="monotone" dataKey="ganhos" stroke="#f21b7f" strokeWidth={4} fillOpacity={1} fill="url(#colorGanhos)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

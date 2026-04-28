@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Agenda } from './Agenda';
 import { Estoque } from './Estoque';
 import { Atendimento } from './Atendimento';
 import { Relatorio } from './Relatorio';
 import { CalendarDays, Package, Scissors, BarChart3, LogOut } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 type TabType = 'agenda' | 'estoque' | 'atendimento' | 'relatorio';
 
@@ -14,6 +16,11 @@ interface DashboardProps {
 
 export function Dashboard({ onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('agenda');
+  const [currentDate, setCurrentDate] = useState('');
+
+  useEffect(() => {
+    setCurrentDate(format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR }));
+  }, []);
 
   const handleLogout = async () => {
     if (supabase) {
@@ -26,27 +33,27 @@ export function Dashboard({ onLogout }: DashboardProps) {
     { id: 'agenda', label: 'Agenda', icon: CalendarDays },
     { id: 'estoque', label: 'Estoque', icon: Package },
     { id: 'atendimento', label: 'Atendimento', icon: Scissors },
-    { id: 'relatorio', label: 'Relatório', icon: BarChart3 },
+    { id: 'relatorio', label: 'Relatórios', icon: BarChart3 },
   ] as const;
 
   return (
-    <div className="min-h-screen flex flex-col max-w-md mx-auto md:max-w-4xl relative">
-      <header className="mb-6 flex justify-between items-center z-10 sticky top-4 px-4 py-2">
+    <div className="min-h-screen flex flex-col max-w-2xl mx-auto relative pb-32">
+      
+      {/* Cabeçalho Pro */}
+      <header className="p-6 pb-4 flex justify-between items-end sticky top-0 bg-white/80 backdrop-blur-2xl z-50 transition-all border-b border-pink-100/50">
         <div>
-          <h1 className="text-[24px] font-[700] text-[#1a1a1a]">SueneNailDesigner</h1>
+          <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest mb-1">{currentDate}</p>
+          <h1 className="text-2xl font-bold text-slate-800" style={{ fontFamily: "'Dancing Script', cursive" }}>Suene Designer</h1>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-2 bg-white px-4 py-1.5 rounded-full border border-[#FFB6C1] text-sm">
-            <span>👤</span> Hello, Designer!
-          </div>
-          <button onClick={handleLogout} className="p-2 text-[#555] hover:text-[#FF1493] hover:bg-white/50 rounded-full transition-colors flex items-center justify-center border border-transparent hover:border-[#FFB6C1]">
-            <LogOut size={20} />
-          </button>
-        </div>
+        <button 
+          onClick={handleLogout} 
+          className="w-12 h-12 bg-white/80 backdrop-blur-md rounded-2xl flex items-center justify-center text-rose-500 active:scale-90 transition-transform shadow-sm border border-white/40"
+        >
+          <LogOut size={20} />
+        </button>
       </header>
 
-      <main className="flex-1 px-4 pb-24 overflow-y-auto">
-        {/* Dynamic Tab Rendering */}
+      <main className="flex-1 p-4 overflow-y-auto">
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {activeTab === 'agenda' && <Agenda />}
           {activeTab === 'estoque' && <Estoque />}
@@ -55,8 +62,8 @@ export function Dashboard({ onLogout }: DashboardProps) {
         </div>
       </main>
 
-      {/* Bottom Navigation for Mobile First approach */}
-      <nav className="glass fixed bottom-0 w-full md:w-[calc(100%-2rem)] md:left-4 md:bottom-4 md:rounded-2xl pb-safe pt-2 px-2 flex justify-around items-center z-20">
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-6 left-6 right-6 h-20 bg-white/75 backdrop-blur-[20px] rounded-[28px] border border-white/40 flex items-center justify-around px-2 z-50 shadow-[0_12px_40px_rgba(0,0,0,0.1)]">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -64,12 +71,14 @@ export function Dashboard({ onLogout }: DashboardProps) {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`flex flex-col items-center justify-center w-full py-2 mb-2 rounded-xl transition-all ${
-                isActive ? 'bg-[#FF1493] text-white shadow-[0_4px_12px_rgba(255,20,147,0.2)]' : 'text-[#555] hover:bg-white/20'
+              className={`tab-btn w-14 h-14 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all duration-300 ${
+                isActive 
+                  ? 'bg-[#f21b7f] text-white shadow-lg shadow-pink-200 -translate-y-2' 
+                  : 'text-slate-400 hover:text-pink-400'
               }`}
             >
-              <Icon size={24} className={isActive ? "text-white" : ""} />
-              <span className="text-[10px] font-semibold mt-1 uppercase tracking-wider">{item.label}</span>
+              <Icon size={isActive ? 24 : 22} />
+              {isActive && <span className="text-[8px] font-bold uppercase tracking-tighter">●</span>}
             </button>
           );
         })}
