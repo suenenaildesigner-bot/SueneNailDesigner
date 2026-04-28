@@ -47,43 +47,39 @@ export function Agenda() {
         </h2>
         
         <form onSubmit={handleAddAppointment} className="space-y-4">
-          <div className="relative group">
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#f21b7f] transition-colors" />
+          <div className="w-full">
             <input 
               required
               type="text" 
               placeholder="Nome da Cliente" 
-              className="input-glass w-full pl-12"
+              className="input-glass w-full"
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
             />
           </div>
-          <div className="relative group">
-            <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#f21b7f] transition-colors" />
+          <div className="w-full">
             <input 
               required
               type="text" 
               placeholder="WhatsApp" 
-              className="input-glass w-full pl-12"
+              className="input-glass w-full"
               value={formData.whatsapp}
               onChange={e => setFormData({...formData, whatsapp: e.target.value})}
             />
           </div>
-          <div className="relative group">
-            <Clock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#f21b7f] transition-colors" />
+          <div className="w-full">
             <input 
               required
               type="datetime-local" 
-              className="input-glass w-full pl-12 text-gray-900"
+              className="input-glass w-full text-gray-900"
               value={formData.date}
               onChange={e => setFormData({...formData, date: e.target.value})}
             />
           </div>
-          <div className="relative group">
-            <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#f21b7f] transition-colors" />
+          <div className="w-full">
             <select 
               required
-              className="input-glass w-full pl-12 appearance-none text-gray-900"
+              className="input-glass w-full appearance-none text-gray-900"
               value={formData.service}
               onChange={e => setFormData({...formData, service: e.target.value})}
             >

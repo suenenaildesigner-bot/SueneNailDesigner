@@ -43,5 +43,13 @@
   .input-glass {
     @apply bg-white border border-pink-100 rounded-2xl w-full p-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#f21b7f] focus:ring-4 focus:ring-[#f21b7f]/10 transition-all font-medium;
   }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 

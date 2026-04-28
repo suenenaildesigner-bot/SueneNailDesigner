@@ -60,24 +60,22 @@ export function Login({ onLogin }: LoginProps) {
             </div>
           )}
           
-          <div className="relative group">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#f21b7f] transition-colors" />
+          <div className="w-full">
             <input
               type="email"
               required
-              className="input-glass pl-12"
+              className="input-glass"
               placeholder="E-mail"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
 
-          <div className="relative group">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#f21b7f] transition-colors" />
+          <div className="relative w-full">
             <input
               type={showPassword ? "text" : "password"}
               required
-              className="input-glass pl-12 pr-12"
+              className="input-glass pr-12"
               placeholder="Senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

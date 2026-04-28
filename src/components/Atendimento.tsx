@@ -37,14 +37,13 @@ export function Atendimento() {
       <form onSubmit={handleDescontar} className="glass-card p-6 space-y-6 mt-[-20px] relative z-20 mx-2">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-600 block">Valor Cobrado (R$)</label>
-          <div className="relative group">
-            <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500 group-focus-within:scale-110 transition-transform" />
+          <div className="w-full">
             <input 
               required
               type="number" 
               step="0.01"
-              placeholder="Ex: 120.00" 
-              className="input-glass w-full pl-12 text-lg font-bold text-gray-800"
+              placeholder="0,00" 
+              className="input-glass w-full text-lg font-bold text-gray-800"
               value={valorCobrado}
               onChange={e => setValorCobrado(e.target.value)}
             />
@@ -52,13 +51,13 @@ export function Atendimento() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700 block flex items-center gap-2">
-            <Droplet size={16} className="text-pink-500"/> Qual gel usou?
+          <label className="text-sm font-bold text-gray-700 block">
+            Qual gel usou?
           </label>
-          <div className="relative group">
+          <div className="w-full">
              <select 
               required
-              className="input-glass w-full appearance-none pr-10"
+              className="input-glass w-full appearance-none"
               value={gelSelecionado}
               onChange={e => setGelSelecionado(e.target.value)}
             >
@@ -67,15 +66,12 @@ export function Atendimento() {
                 <option key={pot.id} value={pot.id}>{pot.name}</option>
               ))}
             </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-focus-within:text-pink-500">
-               <Calculator size={18} />
-            </div>
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-bold text-gray-700 block flex items-center gap-2">
-             <Calculator size={16} className="text-pink-500"/> Quantidade gasta (g)
+          <label className="text-sm font-bold text-gray-700 block text-gray-600">
+             Quantidade gasta (g)
           </label>
           <input 
             required
@@ -85,7 +81,9 @@ export function Atendimento() {
             value={gramatura}
             onChange={e => setGramatura(e.target.value)}
           />
-          <p className="text-xs text-gray-400 mt-1">* A média de um alongamento / manutenção é de 1.5g a 3g.</p>
+          <p className="text-[11px] text-gray-400 mt-1 uppercase tracking-wider font-semibold">
+            * MÉDIA: 1.5G A 3G POR SERVIÇO
+          </p>
         </div>
 
         <button type="submit" className="btn-gradient w-full py-4 text-lg mt-4 flex items-center justify-center gap-2">

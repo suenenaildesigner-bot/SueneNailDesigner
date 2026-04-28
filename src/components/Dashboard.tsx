@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Agenda } from './Agenda';
 import { Estoque } from './Estoque';
 import { Atendimento } from './Atendimento';
 import { Relatorio } from './Relatorio';
-import { CalendarDays, Package, Scissors, BarChart3, LogOut } from 'lucide-react';
+import { CalendarDays, Package, Scissors, BarChart3, LogOut, RefreshCw } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -17,10 +17,48 @@ interface DashboardProps {
 export function Dashboard({ onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<TabType>('agenda');
   const [currentDate, setCurrentDate] = useState('');
+  
+  // Pull to refresh state
+  const [startY, setStartY] = useState(0);
+  const [pulling, setPulling] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCurrentDate(format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR }));
   }, []);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (scrollRef.current && scrollRef.current.scrollTop === 0) {
+      setStartY(e.touches[0].pageY);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const currentY = e.touches[0].pageY;
+    if (startY > 0 && currentY > startY && scrollRef.current && scrollRef.current.scrollTop === 0) {
+      const pull = Math.min(60, (currentY - startY) * 0.4);
+      if (pull > 20) setPulling(true);
+    } else {
+      setPulling(false);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (pulling) {
+      handleRefresh();
+    }
+    setPulling(false);
+    setStartY(0);
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // Simulate data refresh
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    window.location.reload(); // Simple reload to refresh all layers
+    setRefreshing(false);
+  };
 
   const handleLogout = async () => {
     if (supabase) {
@@ -37,8 +75,24 @@ export function Dashboard({ onLogout }: DashboardProps) {
   ] as const;
 
   return (
-    <div className="min-h-screen flex flex-col max-w-2xl mx-auto relative pb-32">
+    <div 
+      className="min-h-screen flex flex-col max-w-2xl mx-auto relative pb-32 overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       
+      {/* Pull to refresh indicator */}
+      <div 
+        className={`fixed top-0 left-0 right-0 z-[100] flex justify-center transition-all duration-300 pointer-events-none ${
+          pulling || refreshing ? 'translate-y-4 opacity-100' : '-translate-y-10 opacity-0'
+        }`}
+      >
+        <div className="bg-white/90 backdrop-blur-md p-3 rounded-full shadow-lg border border-pink-100 flex items-center justify-center">
+          <RefreshCw className={`w-5 h-5 text-[#f21b7f] ${refreshing ? 'animate-spin' : ''}`} />
+        </div>
+      </div>
+
       {/* Cabeçalho Pro */}
       <header className="p-6 pb-4 flex justify-between items-end sticky top-0 bg-white/80 backdrop-blur-2xl z-50 transition-all border-b border-pink-100/50">
         <div>
@@ -53,7 +107,10 @@ export function Dashboard({ onLogout }: DashboardProps) {
         </button>
       </header>
 
-      <main className="flex-1 p-4 overflow-y-auto">
+      <main 
+        ref={scrollRef}
+        className="flex-1 p-4 overflow-y-auto no-scrollbar"
+      >
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {activeTab === 'agenda' && <Agenda />}
           {activeTab === 'estoque' && <Estoque />}
