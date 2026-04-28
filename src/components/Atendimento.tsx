@@ -45,12 +45,16 @@ export function Atendimento() {
     
     if (val === 'Molde F1') {
       setGramatura('3.5');
+      setValorCobrado('180');
     } else if (val === 'Banho de Gel') {
       setGramatura('1.5');
+      setValorCobrado('100');
     } else if (val === 'Manutenção F1') {
       setGramatura('2.5');
+      setValorCobrado('130');
     } else if (val === 'Esmaltação em Gel') {
       setGramatura('0');
+      setValorCobrado('70');
     }
   };
 

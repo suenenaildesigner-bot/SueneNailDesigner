@@ -53,7 +53,7 @@ export function Relatorio() {
         return {
           name: format(d, 'EEE', { locale: ptBR }),
           fullDate: format(d, 'yyyy-MM-dd'),
-          ganhos: 0
+          lucro: 0
         };
       });
 
@@ -61,7 +61,9 @@ export function Relatorio() {
         const dateStr = format(new Date(val.data), 'yyyy-MM-dd');
         const dayMatch = last7Days.find(d => d.fullDate === dateStr);
         if (dayMatch) {
-          dayMatch.ganhos += val.valor_cobrado || 0;
+          // Lucro Líquido por atendimento: (Valor Cobrado - Custo Material - Taxa Fixa 5.00)
+          const lucroAtendimento = (val.valor_cobrado || 0) - (val.custo_material || 0) - TAXA_DESCARTAVEL;
+          dayMatch.lucro += Math.max(0, lucroAtendimento);
         }
       });
 
@@ -143,7 +145,7 @@ export function Relatorio() {
                    contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 10px 25px rgba(242, 27, 127, 0.2)', backgroundColor: 'rgba(255, 255, 255, 0.9)' }}
                    itemStyle={{ color: '#f21b7f', fontWeight: 'bold' }}
                 />
-                <Area type="monotone" dataKey="ganhos" stroke="#f21b7f" strokeWidth={4} fillOpacity={1} fill="url(#colorGanhos)" />
+                <Area type="monotone" dataKey="lucro" stroke="#f21b7f" strokeWidth={4} fillOpacity={1} fill="url(#colorGanhos)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
