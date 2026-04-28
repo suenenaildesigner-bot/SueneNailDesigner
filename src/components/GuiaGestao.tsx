@@ -49,12 +49,12 @@ export function GuiaGestao({ onBack }: { onBack: () => void }) {
           <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative mb-12 w-full flex justify-center"
+            className="mb-12 w-full flex justify-center"
           >
             <img 
               src="/logo2.png" 
               alt="Suene Nail Designer" 
-              className="w-[250px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-transform hover:scale-105 duration-700"
+              className="w-[60%] max-w-[400px] h-auto object-contain drop-shadow-[0_20px_50px_rgba(242,27,127,0.3)] transition-transform hover:scale-105 duration-700"
             />
           </motion.div>
           

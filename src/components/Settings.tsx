@@ -84,21 +84,16 @@ export function Settings({ onBack }: { onBack: () => void }) {
 
       console.log('Enviando Payload para configuracoes_atendimento:', payload);
 
-      const { error, data } = await supabase
+      const { error } = await supabase
         .from('configuracoes_atendimento')
         .upsert(payload, { onConflict: 'servico' });
 
       if (error) {
-        console.error('ERRO TÉCNICO SUPABASE (configuracoes_atendimento):', {
-          mensagem: error.message,
-          detalhes: error.details,
-          hint: error.hint,
-          code: error.code
-        });
+        console.error('ERRO TÉCNICO SUPABASE:', error);
         throw error;
       }
       
-      alert('Configurações de Preços Atualizadas!');
+      alert('Configurações Salvas e Banco Sincronizado!');
       fetchServicos(); 
     } catch (error: any) {
       console.error('Erro ao salvar no Supabase:', error);
