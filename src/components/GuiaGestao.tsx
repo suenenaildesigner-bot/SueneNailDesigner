@@ -43,21 +43,18 @@ export function GuiaGestao({ onBack }: { onBack: () => void }) {
         <h2 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Gestão de Elite</h2>
       </header>
 
-      <main className="p-6 space-y-8">
-        {/* Banner de Logo Luxo */}
-        <div className="flex flex-col items-center justify-center pt-10 pb-16 text-center text-slate-800">
+      <main className="p-8 space-y-12">
+        {/* Banner de Logo Luxo - Sem Molduras */}
+        <div className="flex flex-col items-center justify-center pt-12 pb-20 text-center text-slate-800">
           <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="relative mb-10 w-full flex justify-center"
+            className="relative mb-12 w-full flex justify-center"
           >
-            {/* Glow Rosa de Fundo mais intenso */}
-            <div className="absolute inset-0 bg-pink-400/20 blur-[100px] rounded-full -z-10" />
-            
             <img 
               src="/logo2.png" 
               alt="Suene Nail Designer" 
-              className="w-[240px] max-w-[70%] h-auto object-contain drop-shadow-[0_30px_50px_rgba(242,27,127,0.4)] transition-transform hover:scale-105 duration-700"
+              className="w-[250px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-transform hover:scale-105 duration-700"
             />
           </motion.div>
           

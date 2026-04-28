@@ -317,33 +317,31 @@ export function Atendimento() {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Preço Base</label>
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-pink-500 uppercase tracking-widest ml-1">Preço Base</label>
             <div className="relative group">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm pointer-events-none group-focus-within:text-pink-500">R$</span>
               <input 
                 required
                 type="number" 
                 inputMode="decimal"
                 step="0.01"
-                placeholder="0,00" 
-                className="input-glass w-full pl-10 pr-4 py-4 text-base font-black text-slate-800"
+                placeholder="0.00" 
+                className="input-glass w-full px-8 py-6 text-lg font-black text-slate-800 rounded-[24px]"
                 value={valorCobrado}
                 onChange={e => setValorCobrado(e.target.value.replace(',', '.'))}
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Arte / Extras</label>
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-pink-500 uppercase tracking-widest ml-1">Arte / Extras</label>
             <div className="relative group">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-pink-300 font-bold text-sm pointer-events-none group-focus-within:text-pink-500">R$</span>
               <input 
                 type="number" 
                 inputMode="decimal"
                 step="0.01"
-                placeholder="+ 0,00" 
-                className="input-glass w-full pl-10 pr-4 py-4 text-base font-black text-pink-600"
+                placeholder="+ 0.00" 
+                className="input-glass w-full px-8 py-6 text-lg font-black text-pink-600 rounded-[24px]"
                 value={valorExtra}
                 onChange={e => setValorExtra(e.target.value.replace(',', '.'))}
               />
@@ -367,15 +365,15 @@ export function Atendimento() {
             </select>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Gramatura (g)</label>
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-pink-500 uppercase tracking-widest ml-1">Gramatura (g)</label>
             <input 
               required
               type="number" 
               inputMode="decimal"
               step="0.1"
               placeholder="Ex: 2.0"
-              className="input-glass w-full px-5 py-4 text-slate-900 font-black text-xl"
+              className="input-glass w-full px-8 py-6 text-slate-900 font-black text-xl rounded-[24px]"
               value={gramatura}
               onChange={e => setGramatura(e.target.value)}
             />

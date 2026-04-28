@@ -64,11 +64,16 @@ export function Settings({ onBack }: { onBack: () => void }) {
       const payload = servicos.map(s => {
         const { id, ...rest } = s;
         
-        // Ensure values are numbers before sending to Supabase
+        // Comprehensive sanitization: remove everything except digits, dots and commas
+        const cleanValue = (val: any) => {
+          const str = String(val).replace(/[^0-9.,]/g, '');
+          return Number(str.replace(',', '.'));
+        };
+
         const sanitized = {
           ...rest,
-          valor_sugerido: Number(String(rest.valor_sugerido).replace(',', '.')),
-          gasto_medio: Number(String(rest.gasto_medio).replace(',', '.'))
+          valor_sugerido: cleanValue(rest.valor_sugerido),
+          gasto_medio: cleanValue(rest.gasto_medio)
         };
 
         // If it's a fallback ID (string '1', '2', etc), let Supabase generate a real UUID
@@ -148,37 +153,34 @@ export function Settings({ onBack }: { onBack: () => void }) {
                   <h4 className="font-black text-slate-800 uppercase text-[14px] tracking-[0.3em]">{servico.nome_servico}</h4>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                  <div className="space-y-4">
-                    <label className="text-[12px] font-black text-pink-400 uppercase tracking-widest ml-1 opacity-80">Preço de Venda</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                  <div className="space-y-5">
+                    <label className="text-[12px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Preço do Serviço</label>
                     <div className="relative group">
-                      <div className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 font-extrabold text-sm pointer-events-none group-focus-within:text-pink-500 transition-colors">
-                        R$
-                      </div>
                       <input 
                         type="number"
                         step="0.01"
                         inputMode="decimal"
-                        className="input-glass w-full pl-16 py-6 text-lg font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none rounded-[24px]"
+                        className="input-glass w-full px-8 py-7 text-xl font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none rounded-[28px] bg-slate-50/30"
+                        placeholder="0.00"
                         value={servico.valor_sugerido}
                         onChange={e => handleUpdate(servico.id, 'valor_sugerido', e.target.value)}
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-4">
-                    <label className="text-[12px] font-black text-pink-400 uppercase tracking-widest ml-1 opacity-80">Consumo de Gel</label>
+                  <div className="space-y-5">
+                    <label className="text-[12px] font-black text-[#f21b7f] uppercase tracking-widest ml-1">Consumo de Gel</label>
                     <div className="relative group">
                       <input 
                         type="number"
                         step="0.1"
                         inputMode="decimal"
-                        className="input-glass w-full px-8 py-6 text-lg font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none rounded-[24px]"
+                        className="input-glass w-full px-8 py-7 text-xl font-black text-slate-700 hover:border-pink-200 focus:border-pink-500 transition-all outline-none rounded-[28px] bg-slate-50/30"
                         placeholder="Ex: 3.5"
                         value={servico.gasto_medio}
                         onChange={e => handleUpdate(servico.id, 'gasto_medio', e.target.value)}
                       />
-                      <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[11px] font-black text-slate-300 uppercase tracking-tighter">Gramas</span>
                     </div>
                   </div>
                 </div>
