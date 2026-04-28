@@ -37,52 +37,75 @@ export function GuiaGestao({ onBack }: { onBack: () => void }) {
       className="min-h-screen bg-[#fff5f8] pb-10"
     >
       <header className="p-6 flex items-center gap-4 sticky top-0 bg-white/80 backdrop-blur-md z-50 border-b border-pink-100/50">
-        <button onClick={onBack} className="p-3 bg-white rounded-2xl shadow-sm text-slate-400">
+        <button id="guide-back-button" onClick={onBack} className="p-3 bg-white rounded-2xl shadow-sm text-slate-400">
           <ChevronLeft size={20} />
         </button>
-        <h2 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Manual de Gestão</h2>
+        <h2 className="text-xl font-black text-slate-800 uppercase tracking-tighter">Gestão de Elite</h2>
       </header>
 
       <main className="p-6 space-y-6">
-        <div className="flex flex-col items-center justify-center py-8 text-center">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg mb-4 border-2 border-pink-100">
-             <img src="/logo2.png" alt="Logo" className="w-12 h-12 object-contain opacity-80" />
-          </div>
-          <h1 className="text-2xl font-black text-slate-800 uppercase tracking-tighter" style={{ fontFamily: "'Dancing Script', cursive" }}>Guia da Empreendedora</h1>
-          <p className="text-[10px] font-black text-pink-400 uppercase tracking-[0.3em] mt-2">Elite Management System</p>
+        {/* Banner de Logo Luxo */}
+        <div className="flex flex-col items-center justify-center pt-8 pb-12 text-center text-slate-800">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="relative mb-6"
+          >
+            {/* Glow Rosa de Fundo */}
+            <div className="absolute inset-0 bg-pink-400/20 blur-[60px] rounded-full scale-150 -z-10" />
+            
+            <img 
+              src="/logo2.png" 
+              alt="Suene Nail Designer" 
+              className="w-[200px] h-auto object-contain drop-shadow-[0_20px_30px_rgba(242,27,127,0.3)]"
+            />
+          </motion.div>
+          
+          <h1 className="text-3xl font-black uppercase tracking-tighter leading-none" style={{ fontFamily: "'Dancing Script', cursive" }}>
+            Guia da Empreendedora
+          </h1>
+          <p className="text-[10px] font-black text-pink-500 uppercase tracking-[0.4em] mt-4 opacity-70">
+            Sua Empresa, Seus Lucros, Seu Império
+          </p>
         </div>
 
         <div className="grid gap-4">
           {guides.map((item, idx) => (
             <motion.div 
               key={idx}
-              initial={{ opacity: 0, y: 10 }}
+              id={`guide-card-${idx}`}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="glass-card p-6 border-l-[6px] border-l-pink-500 bg-white/70"
+              className="glass-card p-6 border-l-[6px] border-l-pink-500 bg-white/80 shadow-sm"
             >
-              <div className="flex items-center gap-4 mb-3">
-                <div className={`p-3 ${item.color} rounded-2xl`}>
-                  {item.icon}
+              <div className="flex items-center gap-4 mb-4">
+                <div className={`p-3 ${item.color} rounded-2xl flex items-center justify-center shadow-sm`}>
+                  {React.cloneElement(item.icon as React.ReactElement, { size: 24 })}
                 </div>
                 <h3 className="font-black text-slate-800 uppercase text-xs tracking-widest">{item.title}</h3>
               </div>
-              <p className="text-slate-600 font-medium text-xs leading-relaxed italic">
+              <p className="text-slate-600 font-medium text-[13px] leading-relaxed italic opacity-80">
                 "{item.content}"
               </p>
             </motion.div>
           ))}
         </div>
 
-        <div className="bg-[#f21b7f] rounded-[30px] p-8 text-white shadow-xl flex items-center gap-4">
-           <div className="p-4 bg-white/20 rounded-2xl">
-             <Wallet size={24} />
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="bg-gradient-to-r from-[#f21b7f] to-pink-500 rounded-[30px] p-8 text-white shadow-[0_20px_40px_rgba(242,27,127,0.3)] flex items-center gap-5 mt-4"
+        >
+           <div className="p-4 bg-white/20 rounded-2xl backdrop-blur-sm">
+             <Wallet size={28} />
            </div>
            <div>
-             <p className="text-[10px] font-black uppercase tracking-widest text-pink-100">Meta Diária</p>
-             <p className="text-sm font-bold opacity-90">Sua meta é manter o lucro acima de 60% por serviço.</p>
+             <p className="text-[10px] font-black uppercase tracking-widest text-pink-100 mb-1">Métricas de Sucesso</p>
+             <p className="text-sm font-bold leading-tight">Mantenha sua lucratividade sempre acima de 60% por atendimento.</p>
            </div>
-        </div>
+        </motion.div>
       </main>
     </motion.div>
   );
